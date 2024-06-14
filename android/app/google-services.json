@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "401084609028",
+    "project_id": "hindgreco-48d0a",
+    "storage_bucket": "hindgreco-48d0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401084609028:android:a72885fe5c7154589afb51",
+        "android_client_info": {
+          "package_name": "com.hindgreco.kachakra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoJ56zkufGFk4EfiOibdxsKnR6bY91mrw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
