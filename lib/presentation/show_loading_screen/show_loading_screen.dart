@@ -1,22 +1,39 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui' as ui;
+
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:colorful_safe_area/colorful_safe_area.dart';
+
 import 'package:courier_delivery/core/app_export.dart';
-import 'package:courier_delivery/data/userData.dart';
 import 'package:courier_delivery/data/mswDriverData.dart';
+import 'package:courier_delivery/data/userData.dart';
 import 'package:courier_delivery/presentation/send_package_screen/send_package_screen.dart';
-// import 'package:courier_delivery/presentation/show_loading_screen/loading_screen_controller.dart';
+import 'package:courier_delivery/presentation/show_loading_screen/loading_screen_controller.dart';
+import 'package:courier_delivery/widgets/app_bar/appbar_image.dart';
+import 'package:courier_delivery/widgets/app_bar/appbar_subtitle_1.dart';
+import 'package:courier_delivery/widgets/app_bar/custom_app_bar.dart';
+import 'package:courier_delivery/widgets/custom_button.dart';
+import 'package:courier_delivery/widgets/custom_icon_button.dart';
 import 'package:courier_delivery/presentation/send_package_screen/controller/send_package_controller.dart';
+import 'package:courier_delivery/presentation/send_package_screen/models/card_item_list.dart';
 import 'package:courier_delivery/presentation/show_loading_screen/linear_progress_bar.dart';
 
+import 'package:courier_delivery/widgets/custom_text_form_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_map_polyline_new/google_map_polyline_new.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as loc;
 import 'package:shared_preferences/shared_preferences.dart';
+
+// import 'package:firebase_core/firebase_core.dart';
 
 import 'loading_screen_controller.dart';
 
@@ -29,7 +46,7 @@ class ShowLoadingScreen extends StatefulWidget {
 
 class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
   SendPackageController sendPackageController =
-  Get.put(SendPackageController());
+      Get.put(SendPackageController());
 
   late AnimationController controller;
   int _currentIndex = 0;
@@ -43,7 +60,7 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
   loadingScreenController ctrl = loadingScreenController();
 
   GoogleMapPolyline googleMapPolyline =
-  new GoogleMapPolyline(apiKey: "AIzaSyBv_iPnq5AaNhYzacndg_C9NgObIx-jiNU");
+      new GoogleMapPolyline(apiKey: "AIzaSyBv_iPnq5AaNhYzacndg_C9NgObIx-jiNU");
   final List<Polyline> polyline = [];
   List<LatLng> routeCoords = [];
 
@@ -88,13 +105,13 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
 
     Timer(
         Duration(seconds: 5),
-            () => (setState(() {
+        () => (setState(() {
               _setMapFitToTour(polyline);
-          showInitialContent = false;
-          _currentIndex = 1;
-        })));
+              showInitialContent = false;
+              _currentIndex = 1;
+            })));
     Timer(Duration(seconds: 10),
-            () => (setState(() => showInitialContent2 = false)));
+        () => (setState(() => showInitialContent2 = false)));
   }
 
   Uint8List? markerImage;
@@ -123,7 +140,7 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
   loadMarker() async {
     for (int i = 0; i < images.length; i++) {
       final Uint8List markerIcon =
-      await getBytesFromAssets(images[i].toString(), 100);
+          await getBytesFromAssets(images[i].toString(), 100);
       _markers.add(Marker(
           markerId: MarkerId(i.toString()),
           position: _latLngs[i],
@@ -206,717 +223,712 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
   Widget buildLoadingBottomSheet() {
     return Align(
       alignment: Alignment.bottomCenter,
-        child: Container(
-          height: Get.height * 0.50,
-          width: Get.width,
-          // color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-              color: Colors.white),
-          child: IndexedStack(
-            index: _currentIndex,
-            children: [
-              showInitialContent
-                  ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Searching...'),
-                  GestureDetector(
-                    child: Image.asset('assets/images/search.gif'),
-                    // onTap: () {},
-                  ),
-                ],
-              )
-                  : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(),
-                  Row(children: [
-                  FutureBuilder<String>(
-                  future: retrieveSelectedCard(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.hasData) {
-          String vehicle = snapshot.data!;
-          return Center(
-            child: getImageWidget(vehicle),
-          );
-        } else {
-          return Center(child: Text('No data available.'));
-        }
-      },
-    ),
-                    SizedBox(width: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Looking for",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.normal),
-                        ),
-                        Text(
-                          "Collection Vehicle",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
-                    )
-                  ]),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  LinearProgress(),
-                  const SizedBox(),
-                  Divider(
-                    height: 40,
-                    color: Colors.grey,
-                  ),
-                  Text(
-                    "Pickup Details",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+      child: Container(
+        height: Get.height * 0.50,
+        width: Get.width,
+        // color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            color: Colors.white),
+        child: IndexedStack(
+          index: _currentIndex,
+          children: [
+            showInitialContent
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgTimeLineIcon,
-                      ),
-                      SizedBox(
-                        width: getHorizontalSize(13),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Flexible(
-                                child: Container(
-                                  child: Text(
-                                    UserData.userCurrentAddress.isEmpty
-                                        ? UserData.userAddress.tr
-                                        : UserData.userCurrentAddress.tr,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                  width: 300,
-                                  height: 40,
-                                )),
-                          ),
-                          SizedBox(
-                            height: 60,
-                          ),
-                          Container(
-                            child: Text(
-                              "Drop Location",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal),
-                              softWrap: true,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          "Payment",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          "${ctrl.priceCalculator()}",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => {showCancelOptions()},
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        style: ButtonStyle(
-                            foregroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Color(0xff882f35)),
-                            backgroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Color(0xfff8f8f8)),
-                            minimumSize:
-                            MaterialStateProperty.all(Size(150, 40)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    side: BorderSide(
-                                        color: Color(0xfff8f8f8))))),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Continue",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        style: ButtonStyle(
-                            foregroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Colors.black),
-                            backgroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Colors.lightGreen),
-                            minimumSize:
-                            MaterialStateProperty.all(Size(150, 40)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    side: BorderSide(
-                                        color: Color(0xfff8f8f8))))),
+                      Text('Searching...'),
+                      GestureDetector(
+                        child: Image.asset('assets/images/search.gif'),
+                        // onTap: () {},
                       ),
                     ],
                   )
-                ],
-              ),
-              showInitialContent2
-                  ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(),
-                  Row(children: [
-                    FutureBuilder<String>(
-                      future: retrieveSelectedCard(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (snapshot.hasData) {
-                          String vehicle = snapshot.data!;
-                          return Center(
-                            child: getImageWidget(vehicle),
-                          );
-                        } else {
-                          return Center(child: Text('No data available.'));
-                        }
-                      },
-                    ),
-                    SizedBox(width: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Looking for",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.normal),
-                        ),
-                        Text(
-                          "Collection Vehicle",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
-                    )
-                  ]),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  LinearProgress(),
-                  const SizedBox(),
-                  Divider(
-                    height: 40,
-                    color: Colors.grey,
-                  ),
-                  Text(
-                    "Pickup Details",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Row(
+                : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgTimeLineIcon,
-                      ),
-                      SizedBox(
-                        width: getHorizontalSize(13),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Flexible(
-                                child: Container(
-                                  child: Text(
-                                    UserData.userCurrentAddress.isEmpty
-                                        ? UserData.userAddress.tr
-                                        : UserData.userCurrentAddress.tr,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                  width: 300,
-                                  height: 40,
-                                )),
-                          ),
-                          SizedBox(
-                            height: 60,
-                          ),
-                          Container(
-                            child: Text(
-                              "Drop Location",
+                      const SizedBox(),
+                      Row(children: [
+                        FutureBuilder<String>(
+                          future: retrieveSelectedCard(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (snapshot.hasData) {
+                              String vehicle = snapshot.data!;
+                              return Center(
+                                child: getImageWidget(vehicle),
+                              );
+                            } else {
+                              return Center(child: Text('No data available.'));
+                            }
+                          },
+                        ),
+                        SizedBox(width: 20),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Looking for",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 14,
+                                  fontSize: 17,
                                   fontWeight: FontWeight.normal),
-                              softWrap: true,
                             ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          "Payment",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          "${ctrl.priceCalculator()}",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => {showCancelOptions()},
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        style: ButtonStyle(
-                            foregroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Color(0xff882f35)),
-                            backgroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Color(0xfff8f8f8)),
-                            minimumSize:
-                            MaterialStateProperty.all(Size(150, 40)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    side: BorderSide(
-                                        color: Color(0xfff8f8f8))))),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Continue",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        style: ButtonStyle(
-                            foregroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Colors.black),
-                            backgroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Colors.lightGreen),
-                            minimumSize:
-                            MaterialStateProperty.all(Size(150, 40)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    side: BorderSide(
-                                        color: Color(0xfff8f8f8))))),
-                      ),
-                    ],
-                  )
-                ],
-              )
-                  : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Pickup Vehicle on the way",
-                          style: TextStyle(
-                            color: Color(0xff204a84),
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal,
-                          )),
-                      Container(
-                        width: 70,
-                        height: 32,
-                        child: Center(
-                            child: Text("1 min",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.normal,
-                                ))),
-                        decoration: BoxDecoration(
-                          color: Color(0xff204a84),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      )
-                    ],
-                  ),
-                  Divider(
-                    height: 25,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Start Pickup with PIN",
-                          style: TextStyle(
-                            color: Color(0xff595c65),
-                            fontSize: 15,
-                            fontWeight: FontWeight.normal,
-                          )),
-                      Container(
-                        width: 70,
-                        height: 32,
-                        child: Center(
-                            child: Text("5 8 7 9",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ))),
-                        decoration: BoxDecoration(
-                          color: Color(0xfff6f7f9),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    width: Get.width * 0.9,
-                    height: 150,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text("HR11AA1111",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                Text("Vehicle Name",
-                                    style: TextStyle(
-                                      color: Color(0xff5b5f68),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                    )),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                Text("Driver Name",
-                                    style: TextStyle(
-                                      color: Color(0xff5b5f68),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                    )),
-                              ],
-                            ),
-                            GestureDetector(
-                              onTap: null,
-                              child: CircleAvatar(
-                                radius: 33,
-                                backgroundColor: Colors.lightGreen,
-                                child: Icon(
-                                  Icons.supervised_user_circle,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              // onTap: null,
-                              onTap: () => {
-                                launchDialer(
-                                    MswDriverData.phoneNumber.isEmpty
-                                        ? "0000000000"
-                                        : MswDriverData.phoneNumber)
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color:
-                                    Color(0xffeeeff1), // Border color
-                                    width: 1.0, // Border width
-                                  ),
-                                ),
-                                child: CircleAvatar(
-                                  radius: 16,
-                                  backgroundColor: Colors.white,
-                                  child: Icon(
-                                    Icons.call,
-                                    color: Color(0xff80899a),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: null,
-                              child: Container(
-                                  width: 300,
-                                  height: 32,
-                                  // color: Colors.white,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius:
-                                    BorderRadiusStyle.roundedBorder16,
-                                    border: Border.all(
-                                      color: Color(
-                                          0xffeeeff1), // Border color
-                                      width: 1.0, // Border width
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 14,
-                                      ),
-                                      Icon(
-                                        Icons.message,
-                                        color: Color(0xff80899a),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Driver Name',
-                                        style: TextStyle(
-                                            color: Color(0xff80899a)),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      // color: Colors.black
-                      color: Color(0xfff6f7f9),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Pickup from",
-                            style: TextStyle(
-                              color: Color(0xff595c65),
-                              fontSize: 15,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          // SizedBox(height: ,),
-                          Text("Gurgaon",
+                            Text(
+                              "Collection Vehicle",
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                              ))
+                              ),
+                            )
+                          ],
+                        )
+                      ]),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      LinearProgress(),
+                      const SizedBox(),
+                      Divider(
+                        height: 40,
+                        color: Colors.grey,
+                      ),
+                      Text(
+                        "Pickup Details",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CustomImageView(
+                            svgPath: ImageConstant.imgTimeLineIcon,
+                          ),
+                          SizedBox(
+                            width: getHorizontalSize(13),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Flexible(
+                                    child: Container(
+                                  child: Text(
+                                    UserData.userCurrentAddress.isEmpty
+                                        ? UserData.userAddress.tr
+                                        : UserData.userCurrentAddress.tr,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  width: 300,
+                                  height: 40,
+                                )),
+                              ),
+                              SizedBox(
+                                height: 60,
+                              ),
+                              Container(
+                                child: Text(
+                                  "Drop Location",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  softWrap: true,
+                                ),
+                              )
+                            ],
+                          ),
                         ],
                       ),
-                      ElevatedButton(
-                        onPressed: buildPickUpDetailsButton,
-                        child: Text(
-                          "Booking Details",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              "Payment",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                        style: ButtonStyle(
-                            foregroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Colors.black),
-                            backgroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Color(0xfff6f7f9)),
-                            minimumSize:
-                            MaterialStateProperty.all(Size(150, 40)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    side: BorderSide(
-                                        color: Color(0xfff8f8f8))))),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              "${ctrl.priceCalculator()}",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () => {showCancelOptions()},
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color(0xff882f35)),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color(0xfff8f8f8)),
+                                minimumSize:
+                                    MaterialStateProperty.all(Size(150, 40)),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide(
+                                            color: Color(0xfff8f8f8))))),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Continue",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.black),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.lightGreen),
+                                minimumSize:
+                                    MaterialStateProperty.all(Size(150, 40)),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide(
+                                            color: Color(0xfff8f8f8))))),
+                          ),
+                        ],
+                      )
                     ],
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: null,
-                        child: Text(
-                          "Pay Now",
-                          style: TextStyle(color: Colors.black),
+            showInitialContent2
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(),
+                      Row(children: [
+                        FutureBuilder<String>(
+                          future: retrieveSelectedCard(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (snapshot.hasData) {
+                              String vehicle = snapshot.data!;
+                              return Center(
+                                child: getImageWidget(vehicle),
+                              );
+                            } else {
+                              return Center(child: Text('No data available.'));
+                            }
+                          },
                         ),
-                        style: ButtonStyle(
-                            foregroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Colors.black),
-                            backgroundColor:
-                            MaterialStateProperty.all<Color>(
-                                Colors.lightGreen),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    side: BorderSide(
-                                        color: Color(0xfff8f8f8))))),
-                      ))
-                ],
-              ),
-            ],
-          ),
+                        SizedBox(width: 20),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Looking for",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.normal),
+                            ),
+                            Text(
+                              "Collection Vehicle",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        )
+                      ]),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      LinearProgress(),
+                      const SizedBox(),
+                      Divider(
+                        height: 40,
+                        color: Colors.grey,
+                      ),
+                      Text(
+                        "Pickup Details",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CustomImageView(
+                            svgPath: ImageConstant.imgTimeLineIcon,
+                          ),
+                          SizedBox(
+                            width: getHorizontalSize(13),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Flexible(
+                                    child: Container(
+                                  child: Text(
+                                    UserData.userCurrentAddress.isEmpty
+                                        ? UserData.userAddress.tr
+                                        : UserData.userCurrentAddress.tr,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  width: 300,
+                                  height: 40,
+                                )),
+                              ),
+                              SizedBox(
+                                height: 60,
+                              ),
+                              Container(
+                                child: Text(
+                                  "Drop Location",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  softWrap: true,
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              "Payment",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              "${ctrl.priceCalculator()}",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () => {showCancelOptions()},
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color(0xff882f35)),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color(0xfff8f8f8)),
+                                minimumSize:
+                                    MaterialStateProperty.all(Size(150, 40)),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide(
+                                            color: Color(0xfff8f8f8))))),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Continue",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.black),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.lightGreen),
+                                minimumSize:
+                                    MaterialStateProperty.all(Size(150, 40)),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide(
+                                            color: Color(0xfff8f8f8))))),
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Pickup Vehicle on the way",
+                              style: TextStyle(
+                                color: Color(0xff204a84),
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              )),
+                          Container(
+                            width: 70,
+                            height: 32,
+                            child: Center(
+                                child: Text("1 min",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal,
+                                    ))),
+                            decoration: BoxDecoration(
+                              color: Color(0xff204a84),
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          )
+                        ],
+                      ),
+                      Divider(
+                        height: 25,
+                        color: Colors.grey,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Start Pickup with PIN",
+                              style: TextStyle(
+                                color: Color(0xff595c65),
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal,
+                              )),
+                          Container(
+                            width: 70,
+                            height: 32,
+                            child: Center(
+                                child: Text("5 8 7 9",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ))),
+                            decoration: BoxDecoration(
+                              color: Color(0xfff6f7f9),
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Container(
+                        width: Get.width * 0.9,
+                        height: 150,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("HR11AA1111",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text("Vehicle Name",
+                                        style: TextStyle(
+                                          color: Color(0xff5b5f68),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        )),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text("Driver Name",
+                                        style: TextStyle(
+                                          color: Color(0xff5b5f68),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        )),
+                                  ],
+                                ),
+                                GestureDetector(
+                                  onTap: null,
+                                  child: CircleAvatar(
+                                    radius: 33,
+                                    backgroundColor: Colors.lightGreen,
+                                    child: Icon(
+                                      Icons.supervised_user_circle,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  // onTap: null,
+                                  onTap: () => {
+                                    launchDialer(
+                                        MswDriverData.phoneNumber.isEmpty
+                                            ? "0000000000"
+                                            : MswDriverData.phoneNumber)
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color:
+                                            Color(0xffeeeff1), // Border color
+                                        width: 1.0, // Border width
+                                      ),
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: Colors.white,
+                                      child: Icon(
+                                        Icons.call,
+                                        color: Color(0xff80899a),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: null,
+                                  child: Container(
+                                      width: 300,
+                                      height: 32,
+                                      // color: Colors.white,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                            BorderRadiusStyle.roundedBorder16,
+                                        border: Border.all(
+                                          color:
+                                              Color(0xffeeeff1), // Border color
+                                          width: 1.0, // Border width
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: 14,
+                                          ),
+                                          Icon(
+                                            Icons.message,
+                                            color: Color(0xff80899a),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Driver Name',
+                                            style: TextStyle(
+                                                color: Color(0xff80899a)),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        decoration: BoxDecoration(
+                          // color: Colors.black
+                          color: Color(0xfff6f7f9),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Pickup from",
+                                style: TextStyle(
+                                  color: Color(0xff595c65),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              // SizedBox(height: ,),
+                              Text("Gurgaon",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+                            ],
+                          ),
+                          ElevatedButton(
+                            onPressed: buildPickUpDetailsButton,
+                            child: Text(
+                              "Booking Details",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.black),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color(0xfff6f7f9)),
+                                minimumSize:
+                                    MaterialStateProperty.all(Size(150, 40)),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide(
+                                            color: Color(0xfff8f8f8))))),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: null,
+                            child: Text(
+                              "Pay Now",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.black),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.lightGreen),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide(
+                                            color: Color(0xfff8f8f8))))),
+                          ))
+                    ],
+                  ),
+          ],
         ),
+      ),
     );
   }
 
@@ -983,18 +995,18 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                               padding: const EdgeInsets.only(top: 16),
                               child: Flexible(
                                   child: Container(
-                                    child: Text(
-                                      UserData.userCurrentAddress.isEmpty
-                                          ? UserData.userAddress.tr
-                                          : UserData.userCurrentAddress.tr,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                    width: 260,
-                                    height: 40,
-                                  )),
+                                child: Text(
+                                  UserData.userCurrentAddress.isEmpty
+                                      ? UserData.userAddress.tr
+                                      : UserData.userCurrentAddress.tr,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                width: 260,
+                                height: 40,
+                              )),
                             ),
                             GestureDetector(
                               onTap: null,
@@ -1015,16 +1027,16 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                               padding: const EdgeInsets.only(top: 16),
                               child: Flexible(
                                   child: Container(
-                                    child: Text(
-                                      "Drop Location",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                    width: 260,
-                                    height: 40,
-                                  )),
+                                child: Text(
+                                  "Drop Location",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                width: 260,
+                                height: 40,
+                              )),
                             ),
                             GestureDetector(
                               onTap: null,
@@ -1084,9 +1096,9 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
               ),
               style: ButtonStyle(
                   foregroundColor:
-                  MaterialStateProperty.all<Color>(Color(0xff882f35)),
+                      MaterialStateProperty.all<Color>(Color(0xff882f35)),
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(Color(0xfff8f8f8)),
+                      MaterialStateProperty.all<Color>(Color(0xfff8f8f8)),
                   minimumSize: MaterialStateProperty.all(Size(150, 40)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
@@ -1117,26 +1129,26 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
           children: [
             Center(
                 child: Text(
-                  "Why do you want to cancel?",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
+              "Why do you want to cancel?",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            )),
             SizedBox(
               height: 10,
             ),
             Container(
               child: Center(
                   child: Text(
-                    "Please provide the reason for cancellation",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  )),
+                "Please provide the reason for cancellation",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                ),
+              )),
             ),
             SizedBox(
               height: 14,
@@ -1152,9 +1164,9 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                   ),
                   style: ButtonStyle(
                       foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black),
+                          MaterialStateProperty.all<Color>(Colors.black),
                       backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.lightGreen),
+                          MaterialStateProperty.all<Color>(Colors.lightGreen),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -1177,13 +1189,13 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
         children: [
           Center(
               child: Text(
-                "Are you sure you want to cancel this pickup?",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              )),
+            "Are you sure you want to cancel this pickup?",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          )),
           SizedBox(
             height: 10,
           ),
@@ -1208,9 +1220,9 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                 ),
                 style: ButtonStyle(
                     foregroundColor:
-                    MaterialStateProperty.all<Color>(Color(0xff882f35)),
+                        MaterialStateProperty.all<Color>(Color(0xff882f35)),
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Color(0xfff8f8f8)),
+                        MaterialStateProperty.all<Color>(Color(0xfff8f8f8)),
                     minimumSize: MaterialStateProperty.all(Size(150, 40)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -1228,9 +1240,9 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                 ),
                 style: ButtonStyle(
                     foregroundColor:
-                    MaterialStateProperty.all<Color>(Colors.black),
+                        MaterialStateProperty.all<Color>(Colors.black),
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.lightGreen),
+                        MaterialStateProperty.all<Color>(Colors.lightGreen),
                     minimumSize: MaterialStateProperty.all(Size(150, 40)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -1273,13 +1285,13 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
           ),
           Center(
               child: Text(
-                "Your pickup has been cancelled successfully",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                ),
-              )),
+            "Your pickup has been cancelled successfully",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.normal,
+            ),
+          )),
           SizedBox(
             height: 40,
           ),
@@ -1301,9 +1313,9 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
               ),
               style: ButtonStyle(
                   foregroundColor:
-                  MaterialStateProperty.all<Color>(Colors.black),
+                      MaterialStateProperty.all<Color>(Colors.black),
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.lightGreen),
+                      MaterialStateProperty.all<Color>(Colors.lightGreen),
                   minimumSize: MaterialStateProperty.all(Size(150, 40)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
@@ -1358,7 +1370,7 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
             ? UserData.userAddress.tr
             : UserData.userCurrentAddress.tr);
     LatLng position =
-    LatLng(locations.first.latitude, locations.first.longitude);
+        LatLng(locations.first.latitude, locations.first.longitude);
 
     CameraUpdate cameraUpdate = CameraUpdate.newLatLngZoom(position, 13.8);
     myMapController?.animateCamera(cameraUpdate);
@@ -1372,21 +1384,22 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
     double maxLong = p.first.points.first.longitude;
     p.forEach((poly) {
       poly.points.forEach((point) {
-        if(point.latitude < minLat) minLat = point.latitude;
-        if(point.latitude > maxLat) maxLat = point.latitude;
-        if(point.longitude < minLong) minLong = point.longitude;
-        if(point.longitude > maxLong) maxLong = point.longitude;
+        if (point.latitude < minLat) minLat = point.latitude;
+        if (point.latitude > maxLat) maxLat = point.latitude;
+        if (point.longitude < minLong) minLong = point.longitude;
+        if (point.longitude > maxLong) maxLong = point.longitude;
       });
     });
-    myMapController?.animateCamera(CameraUpdate.newLatLngBounds(LatLngBounds(
-        southwest: LatLng(minLat, minLong),
-        northeast: LatLng(maxLat,maxLong)
-    ), 20));
+    myMapController?.animateCamera(CameraUpdate.newLatLngBounds(
+        LatLngBounds(
+            southwest: LatLng(minLat, minLong),
+            northeast: LatLng(maxLat, maxLong)),
+        20));
   }
 
   Future<String> retrieveSelectedCard() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String vehicle =  prefs.getString('selectedCardItemName') ?? '';
+    String vehicle = prefs.getString('selectedCardItemName') ?? '';
     print("Vehicle selected: ${vehicle}");
     return vehicle;
   }

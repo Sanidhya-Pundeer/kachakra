@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme:ThemeData(
+      theme: ThemeData(
         visualDensity: VisualDensity.standard,
         useMaterial3: true,
         bottomSheetTheme: BottomSheetThemeData(
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
                 surfaceTintColor:
-                MaterialStatePropertyAll(ColorConstant.whiteA700))),
+                    MaterialStatePropertyAll(ColorConstant.whiteA700))),
         dialogTheme: DialogTheme(
             backgroundColor: ColorConstant.whiteA700,
             surfaceTintColor: ColorConstant.whiteA700),

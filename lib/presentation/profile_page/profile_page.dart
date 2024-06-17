@@ -1,11 +1,11 @@
+import 'package:courier_delivery/presentation/profile_page/qr_code_screen.dart';
+
 import '../log_out_screen/log_out_screen.dart';
 import 'controller/profile_controller.dart';
 import 'models/profile_model.dart';
 import 'package:courier_delivery/core/app_export.dart';
 import 'package:flutter/material.dart';
-
-
-
+import 'qr_code_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   ProfileController controller = Get.put(ProfileController(ProfileModel().obs));
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
       width: double.maxFinite,
       decoration: AppDecoration.white,
       child: Column(
@@ -67,8 +67,22 @@ class _ProfilePageState extends State<ProfilePage> {
                   top: 40,
                 ),
               ),
+              SizedBox(
+                height: 1,
+              ),
               GestureDetector(
-                onTap: (){
+                  child: Icon(
+                    Icons.qr_code_2_rounded,
+                    color: Colors.black,
+                  ),
+                  onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CodeScreen()),
+                        )
+                      }),
+              GestureDetector(
+                onTap: () {
                   Get.toNamed(AppRoutes.profileDetailsScreen);
                 },
                 child: Container(
@@ -129,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Get.toNamed(AppRoutes.mySubscriptionScreen);
                 },
                 child: Container(
@@ -190,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Get.toNamed(AppRoutes.myAddressScreen);
                 },
                 child: Container(
@@ -251,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Get.toNamed(AppRoutes.myFamilyMemberScreen);
                 },
                 child: Container(
@@ -312,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Get.toNamed(AppRoutes.customerSupportScreen);
                 },
                 child: Container(
@@ -373,7 +387,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Get.toNamed(AppRoutes.privacyPolicyScreen);
                 },
                 child: Container(
@@ -434,7 +448,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   showDialog(
                     barrierDismissible: false,
                     context: context,
@@ -513,11 +527,4 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-
-
 }
-
-
-
-
-
