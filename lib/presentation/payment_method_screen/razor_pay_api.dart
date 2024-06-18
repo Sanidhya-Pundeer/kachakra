@@ -2,6 +2,7 @@ import 'package:courier_delivery/presentation/home_container1_screen/home_contai
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RazorPay extends StatefulWidget {
   @override
@@ -11,13 +12,14 @@ class RazorPay extends StatefulWidget {
 class _RazorPayState extends State<RazorPay> {
   late Razorpay _razorpay;
   TextEditingController amtController = new TextEditingController();
+  late String payment;
 
   void openCheckout(amount) async {
     amount = amount * 100;
     var options = {
       'key': 'rzp_test_k9VG47IWJrXPjx',
       'amount': amount,
-      'name': 'E-commerce',
+      'name': 'Keemti',
       'prefill': {'contact': '9354694470', 'email': 'hindgreco@gmail.com'},
       'external': {
         'wallets': ['paytm']
@@ -68,6 +70,14 @@ class _RazorPayState extends State<RazorPay> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
+    retrievePaymentAmount();
+  }
+
+  Future<String> retrievePaymentAmount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    payment = prefs.getString('payment') ?? '';
+    print("Payment: ${payment}");
+    return payment;
   }
 
   @override
@@ -78,11 +88,11 @@ class _RazorPayState extends State<RazorPay> {
         appBar: AppBar(
           title: Text(
             'Payment',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.white,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
+            icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -94,8 +104,8 @@ class _RazorPayState extends State<RazorPay> {
               SizedBox(
                 height: 80,
               ),
-              Image.network(
-                "https://i.pinimg.com/736x/a9/09/63/a90963c1eff4a236a38fac75abc907e7.jpg",
+              Image.asset(
+                'assets/images/logonewwhite.png',
                 height: 180,
                 width: 180,
                 fit: BoxFit.cover,
@@ -117,56 +127,50 @@ class _RazorPayState extends State<RazorPay> {
               SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextFormField(
-                  controller: amtController,
-                  cursorColor: Colors.white,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.monetization_on_rounded),
-                    labelText: 'Amount to be paid',
-                    fillColor: Colors.grey[100],
-                    filled: true,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter amount to be paid";
-                    }
-                    return null;
-                  },
-                ),
+              FutureBuilder<String>(
+                future: retrievePaymentAmount(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (snapshot.hasData) {
+                    String payment = snapshot.data!;
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          children: [
+                            Text('Total payable amount: ',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            Icon(Icons.currency_rupee_rounded),
+                            Center(
+                              child: Text(
+                                payment,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Center(child: Text('No data available.'));
+                  }
+                },
               ),
               SizedBox(
                 height: 40,
               ),
               ElevatedButton(
                   onPressed: () {
-                    if (amtController.text.toString().isNotEmpty) {
-                      setState(() {
-                        int amount =
-                            int.parse(amtController.text.toString().trim());
-                        openCheckout(amount);
-                      });
-                    }
+                    setState(() {
+                      int amount = int.parse(payment.toString().trim());
+                      openCheckout(amount);
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,

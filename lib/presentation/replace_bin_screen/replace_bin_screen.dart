@@ -8,6 +8,7 @@ import 'package:courier_delivery/widgets/custom_button.dart';
 import 'package:courier_delivery/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/userData.dart';
 import '../replace_bin_screen/widgets/waste_example_list.dart';
@@ -29,6 +30,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
   int bin_price = 0;
   int addon_price = 0;
   int total_price = 0;
+  SharedPreferences? _prefs;
 
   @override
   void initState() {
@@ -38,6 +40,11 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
           statusBarIconBrightness: Brightness.dark),
     );
     super.initState();
+    initializeSharedPreferences();
+  }
+
+  Future<void> initializeSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
   @override
@@ -162,14 +169,17 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                       if (selectedFamilySize == '1-4') {
                                         sendPackageController
                                             .updateChargeInfo('140');
+                                        total_price = 140;
                                       }
                                       if (selectedFamilySize == '5-6') {
                                         sendPackageController
                                             .updateChargeInfo('225');
+                                        total_price = 225;
                                       }
                                       if (selectedFamilySize == 'more than 6') {
                                         sendPackageController
                                             .updateChargeInfo('260');
+                                        total_price = 260;
                                       }
                                     });
                                   },
@@ -217,8 +227,8 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                           ),
                           if (selectedFamilySize == '1-4')
                             GestureDetector(
-                              onTap: () {
-                                setState(() {
+                              onTap: () async {
+                                setState(() async {
                                   sendPackageController.updateChargeInfo('140');
                                 });
                               },
@@ -236,7 +246,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                           if (selectedFamilySize == '5-6')
                             GestureDetector(
                               onTap: () {
-                                setState(() {
+                                setState(() async {
                                   sendPackageController.updateChargeInfo('225');
                                 });
                               },
@@ -253,10 +263,11 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                             ),
                           if (selectedFamilySize == 'more than 6')
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 setState(() {
                                   sendPackageController.updateChargeInfo('260');
                                 });
+                                await _prefs?.setString('payment', '260' ?? '');
                               },
                               child: Container(
                                 padding: EdgeInsets.all(5),
@@ -304,7 +315,9 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                     text: "Pay: ₹ ".tr +
                         sendPackageController.chargeInfo.toString(),
                     margin: getMargin(left: 16, right: 16, bottom: 40),
-                    onTap: () {
+                    onTap: () async {
+                      await _prefs?.setString(
+                          'payment', total_price.toString() ?? '');
                       if (selectedFamilySize != null) {
                         Navigator.push(
                             context,
