@@ -343,8 +343,8 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
 
   // onTapNext() {
   //   Get.toNamed(
-  //     // AppRoutes.paymentMethodScreen,
-  //     AppRoutes.razorPay,
+  // AppRoutes.paymentMethodScreen,
+  //   // AppRoutes.razorPay,
   //   );
   //   // sendPackageController.generateRequest();
   // }

@@ -19,6 +19,7 @@ dependencies:
   #  firebase_core: ^3.1.0
   fluttertoast: ^8.0.8
   razorpay_flutter: ^1.2.7
+  pay: ^2.0.0
   geocoding: ^2.0.0
   maps_launcher: ^2.0.0
   image_picker: ^0.8.1
