@@ -1,5 +1,6 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:courier_delivery/core/app_export.dart';
+import 'package:courier_delivery/presentation/payment_method_screen/razor_pay_api.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_image.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_subtitle_1.dart';
 import 'package:courier_delivery/widgets/app_bar/custom_app_bar.dart';
@@ -300,17 +301,19 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                 ),
                 bottomNavigationBar: CustomButton(
                     height: getVerticalSize(54),
-                    text:
-                        "Pay: ₹ ".tr + sendPackageController.chargeInfo.toString(),
+                    text: "Pay: ₹ ".tr +
+                        sendPackageController.chargeInfo.toString(),
                     margin: getMargin(left: 16, right: 16, bottom: 40),
                     onTap: () {
-                      if (selectedFamilySize != null)
-                        onTapNext();
+                      if (selectedFamilySize != null) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RazorPay(),
+                            ));
                       }
-                    )
-            )
-        )
-    );
+                      ;
+                    }))));
   }
 
   onTapDeliverto() {
@@ -325,12 +328,13 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
     );
   }
 
-  onTapNext() {
-    Get.toNamed(
-      AppRoutes.paymentMethodScreen,
-    );
-    // sendPackageController.generateRequest();
-  }
+  // onTapNext() {
+  //   Get.toNamed(
+  //     // AppRoutes.paymentMethodScreen,
+  //     AppRoutes.razorPay,
+  //   );
+  //   // sendPackageController.generateRequest();
+  // }
 
   onTapArrowleft4() {
     Get.back();

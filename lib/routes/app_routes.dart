@@ -77,6 +77,7 @@ import 'package:courier_delivery/presentation/payment_method_one_screen/binding/
 import 'package:courier_delivery/presentation/payment_method_one_screen/payment_method_one_screen.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/binding/payment_method_binding.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/payment_method_screen.dart';
+import 'package:courier_delivery/presentation/payment_method_screen/razor_pay_api.dart';
 import 'package:courier_delivery/presentation/privacy_policy_screen/binding/privacy_policy_binding.dart';
 import 'package:courier_delivery/presentation/privacy_policy_screen/privacy_policy_screen.dart';
 import 'package:courier_delivery/presentation/profile_details_screen/binding/profile_details_binding.dart';
@@ -210,7 +211,8 @@ class AppRoutes {
 
   static const String kabadhiwalaScreen = '/nearby_kabadhiwala_screen';
 
-  static const String selectkabadhiwalaScreen = '/select_nearby_kabadhiwala_screen';
+  static const String selectkabadhiwalaScreen =
+      '/select_nearby_kabadhiwala_screen';
 
   static const String safaiKaramchariScreen = '/safai_karamchari_screen';
 
@@ -220,8 +222,7 @@ class AppRoutes {
   static const String selectDeliveryAddressScreen =
       '/select_delivery_address_screen';
 
-  static const String selectLocationScreen =
-      '/select_location_screen';
+  static const String selectLocationScreen = '/select_location_screen';
 
   static const String addAddressScreen = '/add_address_screen';
 
@@ -282,7 +283,8 @@ class AppRoutes {
 
   static const String profileDetailsScreen = '/profile_details_screen';
 
-  static const String repairServiceDetailsScreen = '/repair_service_detail_screen';
+  static const String repairServiceDetailsScreen =
+      '/repair_service_detail_screen';
 
   static const String editProfileScreen = '/edit_profile_screen';
 
@@ -304,7 +306,8 @@ class AppRoutes {
 
   static const String addAdressScreen = '/add_adress_screen';
 
-  static const String editAndDeleteAddressScreen = '/edit_and_delete_address_screen';
+  static const String editAndDeleteAddressScreen =
+      '/edit_and_delete_address_screen';
 
   static const String cancelOrderOneScreen = '/cancel_order_one_screen';
 
@@ -330,6 +333,7 @@ class AppRoutes {
 
   static const String submitComplaintScreen = '/submit_complaint_screen';
 
+  static const String razorPay = '/razor_pay_api';
 
   static List<GetPage> pages = [
     GetPage(
@@ -873,10 +877,16 @@ class AppRoutes {
       ],
     ),
     GetPage(
+      name: razorPay,
+      page: () => RazorPay(),
+      bindings: [],
+    ),
+
+    GetPage(
       name: mySubscriptionScreen,
       page: () => MySubscriptionScreen(),
       bindings: [
-         MySubscriptionBinding(),
+        MySubscriptionBinding(),
       ],
     ),
     GetPage(
