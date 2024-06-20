@@ -43,7 +43,7 @@ class ImageConstant {
   static String imgTrackingOrder = 'assets/images/tracking_order_time_line.svg';
 
   static String imgRazorPayIcon = 'assets/images/razorpay_icon.svg';
-  static String imgMasterCardIcon = 'assets/images/master_card.svg';
+  static String imgPhonePeIcon = 'assets/images/phonepe_icon.svg';
   static String imgApplePayIcon = 'assets/images/apple_pay.svg';
   static String imgGooglePayIcon = 'assets/images/google_pay_icon.svg';
 

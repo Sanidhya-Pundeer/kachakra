@@ -5,7 +5,7 @@ class PaymentData {
   static List<PaymentMethodModel> getpaymentDAta() {
     return [
       PaymentMethodModel(ImageConstant.imgRazorPayIcon, "RazorPay"),
-      PaymentMethodModel(ImageConstant.imgMasterCardIcon, "Master card"),
+      PaymentMethodModel(ImageConstant.imgPhonePeIcon, "PhonePe"),
       PaymentMethodModel(ImageConstant.imgApplePayIcon, "Apple pay"),
       PaymentMethodModel(ImageConstant.imgGooglePayIcon, "Google pay"),
     ];

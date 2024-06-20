@@ -18,11 +18,11 @@ class _PhonePePaymentState extends State<PhonePePayment> {
   late String payment;
   String environment = "SANDBOX";
   String appId = "";
-  String merchantId = "PGTESTPAYUAT";
+  String merchantId = "PGTESTPAYUAT86";
   bool enableLogging = true;
 
   String checksum = "";
-  String saltKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
+  String saltKey = "96434309-7796-489d-8924-ab56988a6076";
   String saltIndex = "1";
 
   String callbackUrl = "google.com";

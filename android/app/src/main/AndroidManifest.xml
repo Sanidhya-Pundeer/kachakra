@@ -54,6 +54,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBv_iPnq5AaNhYzacndg_C9NgObIx-jiNU"/>
+            <meta-data android:name="com.phonepe.android.sdk.isUAT" android:value="true"/> 
+            <meta-data android:name="com.phonepe.android.sdk.isSimulator" android:value="true"/>
+            <meta-data android:name="com.phonepe.android.sdk.MerchantId" android:value="PGTESTPAYUAT"/> 
+            <!-- <meta-data android:name="com.phonepe.android.sdk.AppId" android:value="appId"/> -->
     </application>
 
     <!-- Provide required visibility configuration for API level 30 and above -->
