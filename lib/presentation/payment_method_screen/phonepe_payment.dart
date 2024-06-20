@@ -17,42 +17,38 @@ class PhonePePayment extends StatefulWidget {
 class _PhonePePaymentState extends State<PhonePePayment> {
   late String payment;
   String environment = "SANDBOX";
-  String appId="";
-  String merchantId="PGTESTPAYUAT";
-  bool enableLogging=true;
+  String appId = "";
+  String merchantId = "PGTESTPAYUAT";
+  bool enableLogging = true;
 
-  String checksum="";
-  String saltKey="099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
-  String saltIndex="1";
+  String checksum = "";
+  String saltKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
+  String saltIndex = "1";
 
   String callbackUrl = "google.com";
   String body = "";
   String apiEndPoint = "/pg/v1/pay";
   Object? result;
 
-  getChecksum(){
-    final requestData={
+  getChecksum() {
+    final requestData = {
       "merchantId": merchantId,
       "merchantTransactionId": "transaction_123",
       "merchantUserId": "90223250",
       "amount": 1,
       "mobileNumber": "9999999999",
       "callbackUrl": callbackUrl,
-      "paymentInstrument": {
-      "type": "PAY_PAGE"
-      },
-      "deviceContext": {
-        "deviceOS": "ANDROID"
-      }
+      "paymentInstrument": {"type": "PAY_PAGE"},
+      "deviceContext": {"deviceOS": "ANDROID"}
     };
 
     String base64Body = base64.encode(utf8.encode(json.encode(requestData)));
 
-    checksum = "${sha256.convert(utf8.encode(base64Body+apiEndPoint+saltKey)).toString()}###$saltIndex";
+    checksum =
+        "${sha256.convert(utf8.encode(base64Body + apiEndPoint + saltKey)).toString()}###$saltIndex";
 
     return base64Body;
   }
-
 
   @override
   void initState() {
@@ -185,10 +181,10 @@ class _PhonePePaymentState extends State<PhonePePayment> {
   void phonepeInit() {
     PhonePePaymentSdk.init(environment, appId, merchantId, enableLogging)
         .then((val) => {
-      setState(() {
-        result = 'PhonePe SDK Initialized - $val';
-      })
-    })
+              setState(() {
+                result = 'PhonePe SDK Initialized - $val';
+              })
+            })
         .catchError((error) {
       handleError(error);
       return <dynamic>{};
@@ -196,29 +192,28 @@ class _PhonePePaymentState extends State<PhonePePayment> {
   }
 
   void startPgTrancaction() async {
-    PhonePePaymentSdk.startTransaction(body, callbackUrl, checksum, "").then((response) => {
-      setState(() {
-        if (response != null)
-        {
-          String status = response['status'].toString();
-          String error = response['error'].toString();
-          if (status == 'SUCCESS')
-          {
-            // "Flow Completed - Status: Success!";
-            result = "Flow Completed - Status: Success!";
-          }
-          else {
-            // "Flow Completed - Status: $status and Error: $error";
-            result = "Flow Completed - Status: $status and Error: $error";
-            print(result);
-          }
-        }
-        else {
-          // "Flow Incomplete";
-          result = "Flow Incomplete";
-        }
-      })
-    }).catchError((error) {
+    PhonePePaymentSdk.startTransaction(body, callbackUrl, checksum, "")
+        .then((response) => {
+              setState(() {
+                if (response != null) {
+                  String status = response['status'].toString();
+                  String error = response['error'].toString();
+                  if (status == 'SUCCESS') {
+                    // "Flow Completed - Status: Success!";
+                    result = "Flow Completed - Status: Success!";
+                  } else {
+                    // "Flow Completed - Status: $status and Error: $error";
+                    result =
+                        "Flow Completed - Status: $status and Error: $error";
+                    print(result);
+                  }
+                } else {
+                  // "Flow Incomplete";
+                  result = "Flow Incomplete";
+                }
+              })
+            })
+        .catchError((error) {
       // handleError(error)
       return <dynamic>{};
     });

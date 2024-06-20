@@ -16,7 +16,6 @@ class ImageConstant {
 
   static String imgCar = 'assets/images/img_car.svg';
 
-
   static String imgUSerIcon = 'assets/images/user_icon.svg';
   static String imgMailIcon = 'assets/images/mail_icon.svg';
   static String imgCallIcon = 'assets/images/call_icon.svg';
@@ -38,12 +37,12 @@ class ImageConstant {
   static String imgservice4th = 'assets/images/clean.svg';
 
   static String locationIcon = 'assets/images/location_icon.svg';
-  static String trackingLocationIcon = 'assets/images/tracking_location_icon.svg';
+  static String trackingLocationIcon =
+      'assets/images/tracking_location_icon.svg';
 
   static String imgTrackingOrder = 'assets/images/tracking_order_time_line.svg';
 
-
-  static String imgPaypalIcon = 'assets/images/paypal_icon.svg';
+  static String imgRazorPayIcon = 'assets/images/razorpay_icon.svg';
   static String imgMasterCardIcon = 'assets/images/master_card.svg';
   static String imgApplePayIcon = 'assets/images/apple_pay.svg';
   static String imgGooglePayIcon = 'assets/images/google_pay_icon.svg';
@@ -79,18 +78,19 @@ class ImageConstant {
   static String imgReplaceBinIcon = 'assets/images/replacebin.svg';
   static String imgBuyStickersIcon = 'assets/images/buysticker.svg';
 
-
   static String imgIcPasswordStoke = 'assets/images/eye_icon.svg';
 
   static String imgArrowleft = 'assets/images/img_arrowleft.svg';
 
   static String imgHomeUnselected = 'assets/images/home_icon.svg';
   static String imgOrderUnselected = 'assets/images/order_icon.svg';
-  static String imgNotificationUnselected = 'assets/images/notification_icon.svg';
+  static String imgNotificationUnselected =
+      'assets/images/notification_icon.svg';
   static String imgProfileUnselected = 'assets/images/profile_icon.svg';
   static String imgHomeSelected = 'assets/images/home_icon_selected.svg';
   static String imgOrderSelected = 'assets/images/order_icon_selected.svg';
-  static String imgNotificationSelected = 'assets/images/notification_icon_selected.svg';
+  static String imgNotificationSelected =
+      'assets/images/notification_icon_selected.svg';
   static String imgProfileSelected = 'assets/images/profile_icon_selected.svg';
 
   static String imgCancelorderone = 'assets/images/img_cancelorderone.png';
@@ -163,8 +163,7 @@ class ImageConstant {
   static String imgIcRadioButton = 'assets/images/img_ic_radio_button.svg';
 
   static String imgIcsendfill = 'assets/images/img_icsendfill.svg';
-  static String imgSendmsgIcon= 'assets/images/send_msg_icon.svg';
-
+  static String imgSendmsgIcon = 'assets/images/send_msg_icon.svg';
 
   static String imgSignalBlack90022x22 =
       'assets/images/img_signal_black_900_22x22.svg';
@@ -361,5 +360,4 @@ class ImageConstant {
   static String imgTVrepair = 'assets/images/tvrepair.png';
 
   static String imglocation = 'assets/images/maplocation.png';
-
 }

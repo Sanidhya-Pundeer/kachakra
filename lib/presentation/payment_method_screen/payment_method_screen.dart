@@ -1,6 +1,7 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:courier_delivery/core/app_export.dart';
 import 'package:courier_delivery/data/requestData.dart';
+import 'package:courier_delivery/presentation/payment_method_screen/googlepay_screen.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/payment_configurations.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/razor_pay_api.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/phonepe_payment.dart';
@@ -198,41 +199,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                             SizedBox(
                               height: getVerticalSize(24),
                             ),
-                            GooglePayButton(
-                              paymentConfiguration:
-                                  PaymentConfiguration.fromJsonString(
-                                      defaultGooglePay),
-                              paymentItems: paymentItems,
-                              type: GooglePayButtonType.buy,
-                              margin: const EdgeInsets.only(top: 15.0),
-                              onPaymentResult: (data) {
-                                print(data);
-                              },
-                              loadingIndicator: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                            // FutureBuilder<PaymentConfiguration>(
-                            //     future: _googlePayConfigFuture,
-                            //     builder: (context, snapshot) => snapshot.hasData
-                            //         ? GooglePayButton(
-                            //             paymentConfiguration: snapshot.data!,
-                            //             paymentItems: paymentItems,
-                            //             type: GooglePayButtonType.pay,
-                            //             theme: GooglePayButtonTheme.light,
-                            //             width: double.maxFinite,
-                            //             margin:
-                            //                 const EdgeInsets.only(top: 15.0),
-                            //             onPaymentResult: (data) {
-                            //               print(data);
-                            //             },
-                            //             loadingIndicator: const Center(
-                            //               child: CircularProgressIndicator(),
-                            //             ),
-                            //           )
-                            //         : const SizedBox(
-                            //             height: 10,
-                            //           )),
                             GestureDetector(
                               onTap: () {
                                 onTapAddnewcard();
@@ -290,9 +256,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         AppRoutes.orderSuccessScreen,
       );
     } else if (current == 3) {
-      Get.toNamed(
-        AppRoutes.orderSuccessScreen,
-      );
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GooglePayScreen(),
+          ));
     }
   }
 
