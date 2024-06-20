@@ -319,11 +319,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                       await _prefs?.setString(
                           'payment', total_price.toString() ?? '');
                       if (selectedFamilySize != null) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RazorPay(),
-                            ));
+                        onTapNext();
                       }
                       ;
                     }))));
@@ -341,13 +337,12 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
     );
   }
 
-  // onTapNext() {
-  //   Get.toNamed(
-  // AppRoutes.paymentMethodScreen,
-  //   // AppRoutes.razorPay,
-  //   );
-  //   // sendPackageController.generateRequest();
-  // }
+  onTapNext() {
+    Get.toNamed(
+      AppRoutes.paymentMethodScreen,
+    );
+    // sendPackageController.generateRequest();
+  }
 
   onTapArrowleft4() {
     Get.back();

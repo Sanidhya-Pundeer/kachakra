@@ -47,8 +47,11 @@ dependencies:
   expandable_text: ^2.3.0
   responsive_builder: ^0.7.0
   #  firebase_core: ^3.1.0
+  phonepe_payment_sdk: ^2.0.2
+  crypto: ^3.0.3
 
   http: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

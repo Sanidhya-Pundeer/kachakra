@@ -1,12 +1,17 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:courier_delivery/core/app_export.dart';
 import 'package:courier_delivery/data/requestData.dart';
+import 'package:courier_delivery/presentation/payment_method_screen/payment_configurations.dart';
+import 'package:courier_delivery/presentation/payment_method_screen/razor_pay_api.dart';
+import 'package:courier_delivery/presentation/payment_method_screen/phonepe_payment.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_image.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_subtitle_1.dart';
 import 'package:courier_delivery/widgets/app_bar/custom_app_bar.dart';
 import 'package:courier_delivery/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pay/pay.dart';
 
 import 'controller/payment_method_controller.dart';
 import 'models/payment_method_model.dart';
@@ -21,14 +26,23 @@ class PaymentMethodScreen extends StatefulWidget {
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   PaymentMethodController paymentMethodController =
       Get.put(PaymentMethodController());
+  final paymentItems = <PaymentItem>[];
+  late int current = 0;
+  late PaymentConfiguration _googlePayConfigFuture;
 
   @override
   void initState() {
+    // _googlePayConfigFuture =
+    //     PaymentConfiguration.fromAsset('gpay.json') as PaymentConfiguration;
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
           statusBarColor: ColorConstant.whiteA700,
           statusBarIconBrightness: Brightness.dark),
     );
+    paymentItems.add(PaymentItem(
+        amount: '${retrievePaymentAmount}',
+        label: "Bin",
+        status: PaymentItemStatus.final_price));
     super.initState();
   }
 
@@ -75,9 +89,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                   style: AppStyle.txtSFProTextBold20),
                             ),
                             Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: getMargin(all: 16),
-                                padding: getPadding(left: 16, right: 16, top: 8),
+                                width: MediaQuery.of(context).size.width,
+                                margin: getMargin(all: 16),
+                                padding:
+                                    getPadding(left: 16, right: 16, top: 8),
                                 decoration: AppDecoration.fillGray50.copyWith(
                                     borderRadius:
                                         BorderRadiusStyle.roundedBorder16,
@@ -115,6 +130,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                 return GestureDetector(
                                   onTap: () {
                                     controller.setCurrentPaymentMethod(index);
+                                    print("Index: ${index}");
+                                    current = index;
                                   },
                                   child: Padding(
                                     padding: getPadding(top: 8, bottom: 8),
@@ -181,6 +198,41 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                             SizedBox(
                               height: getVerticalSize(24),
                             ),
+                            GooglePayButton(
+                              paymentConfiguration:
+                                  PaymentConfiguration.fromJsonString(
+                                      defaultGooglePay),
+                              paymentItems: paymentItems,
+                              type: GooglePayButtonType.buy,
+                              margin: const EdgeInsets.only(top: 15.0),
+                              onPaymentResult: (data) {
+                                print(data);
+                              },
+                              loadingIndicator: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                            // FutureBuilder<PaymentConfiguration>(
+                            //     future: _googlePayConfigFuture,
+                            //     builder: (context, snapshot) => snapshot.hasData
+                            //         ? GooglePayButton(
+                            //             paymentConfiguration: snapshot.data!,
+                            //             paymentItems: paymentItems,
+                            //             type: GooglePayButtonType.pay,
+                            //             theme: GooglePayButtonTheme.light,
+                            //             width: double.maxFinite,
+                            //             margin:
+                            //                 const EdgeInsets.only(top: 15.0),
+                            //             onPaymentResult: (data) {
+                            //               print(data);
+                            //             },
+                            //             loadingIndicator: const Center(
+                            //               child: CircularProgressIndicator(),
+                            //             ),
+                            //           )
+                            //         : const SizedBox(
+                            //             height: 10,
+                            //           )),
                             GestureDetector(
                               onTap: () {
                                 onTapAddnewcard();
@@ -218,12 +270,40 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   }
 
   onTapPaynow() {
-    Get.toNamed(
-      AppRoutes.orderSuccessScreen,
-    );
+    if (current == 0) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RazorPay(),
+          ));
+    } else if (current == 1) {
+      // Get.toNamed(
+      //   AppRoutes.orderSuccessScreen,
+      // );
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PhonePePayment(),
+          ));
+    } else if (current == 2) {
+      Get.toNamed(
+        AppRoutes.orderSuccessScreen,
+      );
+    } else if (current == 3) {
+      Get.toNamed(
+        AppRoutes.orderSuccessScreen,
+      );
+    }
   }
 
   onTapArrowleft9() {
     Get.back();
+  }
+
+  Future<String> retrievePaymentAmount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String payment = prefs.getString('payment') ?? '';
+    print("Payment Amount: ${payment}");
+    return payment;
   }
 }
