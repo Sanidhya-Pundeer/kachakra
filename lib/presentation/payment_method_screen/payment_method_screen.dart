@@ -197,13 +197,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                 );
                               },
                             ),
-                            ElevatedButton(
-                                onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UpiPayment(),
-                                    )),
-                                child: Text('for upi payment')),
                             SizedBox(
                               height: getVerticalSize(24),
                             ),
@@ -260,9 +253,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             builder: (context) => PhonePePayment(),
           ));
     } else if (current == 2) {
-      Get.toNamed(
-        AppRoutes.orderSuccessScreen,
-      );
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UpiPayment(),
+          ));
     } else if (current == 3) {
       Navigator.push(
           context,
