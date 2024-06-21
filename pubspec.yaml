@@ -51,6 +51,7 @@ dependencies:
   crypto: ^3.0.3
 
   http: any
+  upi_india: ^3.0.1
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:courier_delivery/presentation/payment_method_screen/googlepay_sc
 import 'package:courier_delivery/presentation/payment_method_screen/payment_configurations.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/razor_pay_api.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/phonepe_payment.dart';
+import 'package:courier_delivery/presentation/payment_method_screen/upi_payment_screen.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_image.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_subtitle_1.dart';
 import 'package:courier_delivery/widgets/app_bar/custom_app_bar.dart';
@@ -196,6 +197,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                 );
                               },
                             ),
+                            ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UpiPayment(),
+                                    )),
+                                child: Text('for upi payment')),
                             SizedBox(
                               height: getVerticalSize(24),
                             ),
