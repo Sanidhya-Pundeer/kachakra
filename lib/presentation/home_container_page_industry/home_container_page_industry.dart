@@ -19,7 +19,8 @@ import 'package:flutter/material.dart';
 class HomeContainerPageIndustry extends StatelessWidget {
   HomeContainerPageIndustry({Key? key}) : super(key: key);
 
-  HomeContainerIndustryController controller = Get.put(HomeContainerIndustryController());
+  HomeContainerIndustryController controller =
+      Get.put(HomeContainerIndustryController());
 
   @override
   Widget build(BuildContext context) {
@@ -140,66 +141,78 @@ class HomeContainerPageIndustry extends StatelessWidget {
                       );
                     })),
               ),
-              if (RequestData.requestStatus != "" && RequestData.requestStatus != "Completed")
-              Padding(
-                padding: getPadding(left: 16, right: 16, top: 16),
-                child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed(AppRoutes.trackingDetailsScreen);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                Colors.black.withOpacity(0.3), // Shadow color
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            offset: Offset(0, 2), // Offset of the shadow
+              if (RequestData.requestStatus != "" &&
+                  RequestData.requestStatus != "Completed")
+                Padding(
+                  padding: getPadding(left: 16, right: 16, top: 16),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.toNamed(AppRoutes.trackingDetailsScreen);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  Colors.black.withOpacity(0.3), // Shadow color
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              offset: Offset(0, 2), // Offset of the shadow
+                            ),
+                          ],
+                          borderRadius:
+                              BorderRadius.circular(getHorizontalSize(16)),
+                          color: ColorConstant.gray50),
+                      height: getSize(70),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text("Last \nRequest",
+                              maxLines: null,
+                              textAlign: TextAlign.left,
+                              style: AppStyle.txtSFProTextBoldWhite15),
+                          Text(" |\n | ",
+                              maxLines: null,
+                              textAlign: TextAlign.left,
+                              style: AppStyle.txtSFProTextMedium14),
+                          SizedBox(
+                            width: getHorizontalSize(8),
                           ),
+                          Text(
+                              RequestData.type_of_waste +
+                                  " " +
+                                  RequestData.requestType +
+                                  "\n" +
+                                  RequestData.weight,
+                              maxLines: null,
+                              textAlign: TextAlign.left,
+                              style: AppStyle.txtSFProTextMedium14),
+                          if (RequestData.requestStatus == "Pending")
+                            Container(
+                              margin: getMargin(
+                                  left: 50, top: 0, right: 0, bottom: 0),
+                              child: CustomImageView(
+                                imagePath: ImageConstant.imgbinloading,
+                                height: getSize(50),
+                                width: getSize(50),
+                              ),
+                            ),
+                          if (RequestData.requestStatus == "In-Progress")
+                            Container(
+                              margin: getMargin(
+                                  left: 5, top: 15, right: 15, bottom: 15),
+                              child: CustomImageView(
+                                svgPath: ImageConstant.imgTickIcon,
+                                height: getSize(30),
+                                width: getSize(30),
+                              ),
+                            ),
                         ],
-                        borderRadius:
-                            BorderRadius.circular(getHorizontalSize(16)),
-                        color: ColorConstant.gray50),
-                    height: getSize(70),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text("Last \nRequest",
-                            maxLines: null,
-                            textAlign: TextAlign.left,
-                            style: AppStyle.txtSFProTextBoldWhite15),
-                        Text(" |\n | ",
-                            maxLines: null,
-                            textAlign: TextAlign.left,
-                            style: AppStyle.txtSFProTextMedium14),
-                        SizedBox(
-                          width: getHorizontalSize(8),
-                        ),
-                        Text(RequestData.type_of_waste + " " + RequestData.requestType + "\n" + RequestData.weight,
-                            maxLines: null,
-                            textAlign: TextAlign.left,
-                            style: AppStyle.txtSFProTextMedium14),
-                        if (RequestData.requestStatus == "Pending")
-                        Container( margin: getMargin(left: 50, top: 0, right: 0, bottom: 0),
-                          child: CustomImageView(
-                            imagePath: ImageConstant.imgbinloading,
-                            height: getSize(50),
-                            width: getSize(50),
-                          ),),
-                        if (RequestData.requestStatus == "In-Progress")
-                          Container( margin: getMargin(left: 5, top: 15, right: 15, bottom: 15),
-                            child: CustomImageView(
-                            svgPath: ImageConstant.imgTickIcon,
-                            height: getSize(30),
-                            width: getSize(30),
-                          ),),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
               Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
@@ -330,22 +343,20 @@ class HomeContainerPageIndustry extends StatelessWidget {
                   decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color:
-                          Colors.black.withOpacity(0.3), // Shadow color
+                          color: Colors.black.withOpacity(0.3), // Shadow color
                           spreadRadius: 2,
                           blurRadius: 2,
                           offset: Offset(0, 2), // Offset of the shadow
                         ),
                       ],
-                      borderRadius:
-                      BorderRadius.circular(getHorizontalSize(8)),
+                      borderRadius: BorderRadius.circular(getHorizontalSize(8)),
                       color: ColorConstant.gray50),
                   // Set padding
                   child: Row(
                     children: [
                       // Left Column with three rows of text
                       Expanded(
-                        child: Padding(
+                          child: Padding(
                         padding: getPadding(left: 16, right: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,8 +386,8 @@ class HomeContainerPageIndustry extends StatelessWidget {
                               ),
                             ),
                           ],
-                        ),)
-                      ),
+                        ),
+                      )),
                       // Right Column with an image
                       GestureDetector(
                         onTap: () {
@@ -384,15 +395,15 @@ class HomeContainerPageIndustry extends StatelessWidget {
                           onTapTxtViewall();
                         },
                         child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: getPadding(right: 16),
-                            child: CustomImageView(
-                            svgPath: ImageConstant.imgtruck,
-                            height: getSize(100),
-                            width: getSize(100),
-                          ),)
-                        ),
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: getPadding(right: 16),
+                              child: CustomImageView(
+                                svgPath: ImageConstant.imgtruck,
+                                height: getSize(100),
+                                width: getSize(100),
+                              ),
+                            )),
                       ),
                     ],
                   ),
@@ -705,7 +716,7 @@ class HomeContainerPageIndustry extends StatelessWidget {
     );
   }
 
-  onTapTxtViewall() async{
+  onTapTxtViewall() async {
     Get.dialog(
       Center(
         child: CircularProgressIndicator(),
@@ -717,8 +728,7 @@ class HomeContainerPageIndustry extends StatelessWidget {
       var position = await Geolocator.getCurrentPosition();
       UserData.currentPosition = position;
       // Navigate to the redeem stations map screen
-      await
-      Get.toNamed(
+      await Get.toNamed(
         AppRoutes.liveTrackingOneScreen,
       );
     } catch (e) {

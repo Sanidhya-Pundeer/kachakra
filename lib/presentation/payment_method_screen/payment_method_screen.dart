@@ -27,7 +27,7 @@ class PaymentMethodScreen extends StatefulWidget {
 
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   PaymentMethodController paymentMethodController =
-      Get.put(PaymentMethodController());
+  Get.put(PaymentMethodController());
   final paymentItems = <PaymentItem>[];
   late int current = 0;
   late PaymentConfiguration _googlePayConfigFuture;
@@ -94,10 +94,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                 width: MediaQuery.of(context).size.width,
                                 margin: getMargin(all: 16),
                                 padding:
-                                    getPadding(left: 16, right: 16, top: 8),
+                                getPadding(left: 16, right: 16, top: 8),
                                 decoration: AppDecoration.fillGray50.copyWith(
                                     borderRadius:
-                                        BorderRadiusStyle.roundedBorder16,
+                                    BorderRadiusStyle.roundedBorder16,
                                     color: ColorConstant.deepPurple50,
                                     border: Border.all(
                                         color: ColorConstant.deepPurple600)),
@@ -128,7 +128,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                               itemCount: controller.paymentMethods.length,
                               itemBuilder: (context, index) {
                                 PaymentMethodModel data =
-                                    controller.paymentMethods[index];
+                                controller.paymentMethods[index];
                                 return GestureDetector(
                                   onTap: () {
                                     controller.setCurrentPaymentMethod(index);
@@ -140,21 +140,21 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                     child: Container(
                                       decoration: AppDecoration.fillGray50
                                           .copyWith(
-                                              borderRadius: BorderRadiusStyle
-                                                  .roundedBorder16,
-                                              color:
-                                                  controller.currentPayment ==
-                                                          index
-                                                      ? ColorConstant
-                                                          .deepPurple50
-                                                      : ColorConstant.gray50,
-                                              border: Border.all(
-                                                  color: controller
-                                                              .currentPayment ==
-                                                          index
-                                                      ? ColorConstant
-                                                          .deepPurple600
-                                                      : ColorConstant.gray50)),
+                                          borderRadius: BorderRadiusStyle
+                                              .roundedBorder16,
+                                          color:
+                                          controller.currentPayment ==
+                                              index
+                                              ? ColorConstant
+                                              .deepPurple50
+                                              : ColorConstant.gray50,
+                                          border: Border.all(
+                                              color: controller
+                                                  .currentPayment ==
+                                                  index
+                                                  ? ColorConstant
+                                                  .deepPurple600
+                                                  : ColorConstant.gray50)),
                                       child: Padding(
                                         padding: getPadding(
                                             top: 20,
@@ -163,7 +163,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                             right: 16),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             Row(
                                               children: [
@@ -172,21 +172,21 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                                     height: getSize(36),
                                                     width: getSize(36),
                                                     alignment:
-                                                        Alignment.center),
+                                                    Alignment.center),
                                                 Text(data.title!,
                                                     overflow:
-                                                        TextOverflow.ellipsis,
+                                                    TextOverflow.ellipsis,
                                                     textAlign: TextAlign.left,
                                                     style: AppStyle.txtHeadline)
                                               ],
                                             ),
                                             CustomImageView(
                                               svgPath: controller
-                                                          .currentPayment ==
-                                                      index
+                                                  .currentPayment ==
+                                                  index
                                                   ? ImageConstant.imgEyeBlack900
                                                   : ImageConstant
-                                                      .imgIcRadioButton,
+                                                  .imgIcRadioButton,
                                             )
                                             //ImageConstant.imgIcRadioButton,
                                           ],
@@ -256,13 +256,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => UpiPayment(),
+            builder: (context) => GooglePayScreen(),
           ));
     } else if (current == 3) {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => GooglePayScreen(),
+            builder: (context) => UpiPayment(),
           ));
     }
   }

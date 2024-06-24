@@ -1,12 +1,15 @@
 import 'package:courier_delivery/data/mswDriverData.dart';
 import 'package:courier_delivery/data/requestData.dart';
 import 'package:courier_delivery/presentation/home_container_page/models/home_slider_model.dart';
+import 'package:courier_delivery/presentation/refer_and_earn_screen/refer_and_screen.dart';
 import 'package:courier_delivery/widgets/custom_button.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../data/userData.dart';
 import '../../widgets/circular_pie_chart.dart';
 import '../home_container_page/widgets/slidermaskgroup_item_widget.dart';
+import '../switch_profile_dialog_screen/switch_profile_dialog_screen.dart';
 import 'controller/home_container_controller.dart';
+import 'models/corier_service_model.dart';
 import 'models/recently_shipped_data_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:courier_delivery/core/app_export.dart';
@@ -311,7 +314,7 @@ class _SendPackageScreenState extends State<HomeContainerPage> {
                 ),
               if (RequestData.requestStatus != "" &&
                   RequestData.requestStatus != "Completed" &&
-                  RequestData.requestStatus != "Cancelled" )
+                  RequestData.requestStatus != "Cancelled")
                 Padding(
                   padding: getPadding(left: 16, right: 16, top: 16),
                   child: GestureDetector(
@@ -345,10 +348,12 @@ class _SendPackageScreenState extends State<HomeContainerPage> {
                           Container(
                             padding: getPadding(top: 15, bottom: 15),
                             height:
-                            80, // Set the height to fill the entire space vertically
+                                80, // Set the height to fill the entire space vertically
                             child: VerticalDivider(
-                              color: Colors.grey, // Customize the color as needed
-                              thickness: 1.0, // Customize the thickness as needed
+                              color:
+                                  Colors.grey, // Customize the color as needed
+                              thickness:
+                                  1.0, // Customize the thickness as needed
                             ),
                           ),
                           SizedBox(
@@ -569,6 +574,18 @@ class _SendPackageScreenState extends State<HomeContainerPage> {
                     SizedBox(
                       width: getHorizontalSize(8),
                     ),
+                    if (UserData.userType == 'industry')
+                      category_button(() {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReferAndEarn(),
+                            ));
+                      }, "Refer & Earn", ImageConstant.imgSendPackegeIcon),
+                    if (UserData.userType == 'industry')
+                      SizedBox(
+                        width: getHorizontalSize(8),
+                      ),
                     category_button(() {
                       Get.toNamed(AppRoutes.orderTrackingScreen);
                     }, "Request \nStatus".tr,
