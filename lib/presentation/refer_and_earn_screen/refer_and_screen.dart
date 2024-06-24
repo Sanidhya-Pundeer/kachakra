@@ -10,7 +10,7 @@ class ReferAndEarn extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Color.fromARGB(255, 227, 219, 219),
+        // backgroundColor: Color.fromARGB(255, 227, 219, 219),
         body: Stack(
           children: [
             Container(
@@ -150,7 +150,7 @@ class BottomSheetDummyUI extends StatelessWidget {
                         child: Container(
                           color: Colors.black12,
                           height: 20,
-                          width: 240,
+                          width: 220,
                         ),
                       ),
                       SizedBox(height: 5),
@@ -159,7 +159,7 @@ class BottomSheetDummyUI extends StatelessWidget {
                         child: Container(
                           color: Colors.black12,
                           height: 20,
-                          width: 180,
+                          width: 160,
                         ),
                       ),
                       SizedBox(height: 50),
