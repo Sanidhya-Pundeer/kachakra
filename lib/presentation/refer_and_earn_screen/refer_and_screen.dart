@@ -15,16 +15,36 @@ class ReferAndEarn extends StatefulWidget {
 
 class _ReferAndEarnState extends State<ReferAndEarn> {
   List<Contact> contacts = [];
+  List<Contact> contactsFiltered = [];
+  TextEditingController searchController = TextEditingController();
 
   @override
   initState() {
     super.initState();
     getAllContacts();
+    searchController.addListener(() {
+      filterContact();
+    });
+  }
+
+  filterContact() {
+    List<Contact> _contacts = [];
+    _contacts.addAll(contacts);
+    if (searchController.text.isNotEmpty) {
+      _contacts.retainWhere((contact) {
+        String searchTerm = searchController.text.toLowerCase();
+        String contactName = contact.displayName!.toLowerCase();
+        return contactName.contains(searchTerm);
+      });
+
+      setState(() {
+        contactsFiltered = _contacts;
+      });
+    }
   }
 
   getAllContacts() async {
-    List<Contact> _contacts =
-        await ContactsService.getContacts(withThumbnails: false);
+    List<Contact> _contacts = await ContactsService.getContacts();
     setState(() {
       contacts = _contacts;
     });
@@ -33,6 +53,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    bool isSearching = searchController.text.isNotEmpty;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -41,17 +62,108 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
           children: [
             Container(
               height: Get.height * 0.5,
-              child: Image.asset(
-                "assets/images/refer.jpg",
-                fit: BoxFit.contain,
-                width: double.infinity,
+              child: Column(
+                children: [
+                  Image.asset(
+                    "assets/images/refer.png",
+                    height: Get.height * 0.38,
+                    // fit: BoxFit.fitHeight,
+                    // width: double.infinity,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Invite",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 9),
+                        Container(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.copy_rounded,
+                                size: 23,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Copy')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 40,
+                        ),
+                        Container(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.share,
+                                size: 23,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Share')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 40,
+                        ),
+                        Container(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.mail_outline_rounded,
+                                size: 23,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Mail')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 40,
+                        ),
+                        Container(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.more_horiz_rounded,
+                                size: 23,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('More')
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
             buildBackButton(),
             DraggableScrollableSheet(
               initialChildSize: 0.5,
-              minChildSize: 0.3,
-              maxChildSize: 1.0,
+              minChildSize: 0.5,
+              maxChildSize: 0.5,
               builder:
                   (BuildContext context, ScrollController scrollController) {
                 return Container(
@@ -62,219 +174,58 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                       topRight: Radius.circular(16.0),
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Invite",
-                          style: TextStyle(fontSize: 25),
-                        ),
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    slivers: <Widget>[
+                      SliverToBoxAdapter(
+                        child: Container(
+                            padding: EdgeInsets.all(16.0),
+                            child: TextField(
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                  labelText: 'Search',
+                                  border: new OutlineInputBorder(
+                                      borderSide: new BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  prefixIcon: Icon(Icons.search_outlined,
+                                      color: Theme.of(context).primaryColor)),
+                            )),
                       ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 9),
-                          Container(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.copy_rounded,
-                                  size: 30,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text('Copy')
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Container(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.share,
-                                  size: 30,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text('Share')
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Container(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.mail_outline_rounded,
-                                  size: 30,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text('Mail')
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Container(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.more_horiz_rounded,
-                                  size: 30,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text('More')
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 40,
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        controller: scrollController,
-                        itemCount: contacts.length,
-                        itemBuilder: (context, index) {
-                          Contact contact = contacts[index];
-                          String? phone = contact.phones?.isNotEmpty == true
-                              ? contact.phones!.first.value
-                              : 'No phone number';
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            Contact contact = isSearching == true
+                                ? contactsFiltered[index]
+                                : contacts[index];
+                            String? phone = contact.phones?.isNotEmpty == true
+                                ? contact.phones!.first.value
+                                : 'No phone number';
 
-                          return ListTile(
-                            title: Text(contact.displayName ?? 'No name'),
-                            subtitle: Text(phone ?? 'No phone number'),
-                          );
-                        },
+                            return ListTile(
+                              title: Text(contact.displayName ?? 'No name'),
+                              subtitle: Text(phone ?? 'No phone number'),
+                              leading: (contact.avatar != null &&
+                                      contact.avatar!.length > 0)
+                                  ? CircleAvatar(
+                                      backgroundImage:
+                                          MemoryImage(contact.avatar!),
+                                    )
+                                  : CircleAvatar(
+                                      child: Text(contact.initials()),
+                                    ),
+                            );
+                          },
+                          childCount: isSearching == true
+                              ? contactsFiltered.length
+                              : contacts.length,
+                        ),
                       ),
                     ],
                   ),
                 );
               },
             ),
-            // MyDraggableSheet(
-            //     child: Padding(
-            //       padding: EdgeInsets.all(10.0),
-            //       child: Column(
-            //         children: [
-            //           Align(
-            //             alignment: Alignment.topLeft,
-            //             child: Text(
-            //               "Invite",
-            //               style: TextStyle(fontSize: 25),
-            //             ),
-            //           ),
-            //           SizedBox(
-            //             height: 15,
-            //           ),
-            //           Row(
-            //             children: [
-            //               SizedBox(width: 9),
-            //               Container(
-            //                 child: Column(
-            //                   children: [
-            //                     Icon(
-            //                       Icons.copy_rounded,
-            //                       size: 30,
-            //                     ),
-            //                     SizedBox(
-            //                       height: 5,
-            //                     ),
-            //                     Text('Copy')
-            //                   ],
-            //                 ),
-            //               ),
-            //               SizedBox(
-            //                 width: 40,
-            //               ),
-            //               Container(
-            //                 child: Column(
-            //                   children: [
-            //                     Icon(
-            //                       Icons.share,
-            //                       size: 30,
-            //                     ),
-            //                     SizedBox(
-            //                       height: 5,
-            //                     ),
-            //                     Text('Share')
-            //                   ],
-            //                 ),
-            //               ),
-            //               SizedBox(
-            //                 width: 40,
-            //               ),
-            //               Container(
-            //                 child: Column(
-            //                   children: [
-            //                     Icon(
-            //                       Icons.mail_outline_rounded,
-            //                       size: 30,
-            //                     ),
-            //                     SizedBox(
-            //                       height: 5,
-            //                     ),
-            //                     Text('Mail')
-            //                   ],
-            //                 ),
-            //               ),
-            //               SizedBox(
-            //                 width: 40,
-            //               ),
-            //               Container(
-            //                 child: Column(
-            //                   children: [
-            //                     Icon(
-            //                       Icons.more_horiz_rounded,
-            //                       size: 30,
-            //                     ),
-            //                     SizedBox(
-            //                       height: 5,
-            //                     ),
-            //                     Text('More')
-            //                   ],
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //           SizedBox(
-            //             height: 40,
-            //           ),
-            //           ListView.builder(
-            //               shrinkWrap: true,
-            //               itemCount: contacts.length,
-            //               itemBuilder: (context, index) {
-            //                 Contact contact = contacts[index];
-            //                 String? phone = contact.phones?.isNotEmpty == true
-            //                     ? contact.phones!.first.value
-            //                     : 'No phone number';
-            //
-            //                 print("Contacts: ${contacts.length}");
-            //                 return ListTile(
-            //                   title: Text(contact.displayName ?? 'No name'),
-            //                   subtitle: Text(phone ?? 'No phone number'),
-            //                 );
-            //               }),
-            //           // ShowContacts(),
-            //         ],
-            //       ),
-            //     )),
           ],
         ),
       ),
@@ -302,124 +253,3 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
     Get.back();
   }
 }
-
-
-// class MyDraggableSheet extends StatefulWidget {
-//   final Widget child;
-//   MyDraggableSheet({super.key, required this.child});
-//
-//   @override
-//   State<MyDraggableSheet> createState() => _MyDraggableSheetState();
-// }
-//
-// class _MyDraggableSheetState extends State<MyDraggableSheet> {
-//   final sheet = GlobalKey();
-//   final controller = DraggableScrollableController();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     controller.addListener(onChanged);
-//     // getAllContacts();
-//   }
-//
-//   void onChanged() {
-//     final currentSize = controller.size;
-//     if (currentSize <= 0.05) collapse();
-//   }
-//
-//   void collapse() => animateSheet(getSheet.snapSizes!.first);
-//
-//   void anchor() => animateSheet(getSheet.snapSizes!.last);
-//
-//   void expand() => animateSheet(getSheet.maxChildSize);
-//
-//   // void hide() => animateSheet(getSheet.minChildSize);
-//
-//   void animateSheet(double size) {
-//     controller.animateTo(
-//       size,
-//       duration: const Duration(milliseconds: 50),
-//       curve: Curves.easeInOut,
-//     );
-//   }
-//
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     controller.dispose();
-//   }
-//
-//   DraggableScrollableSheet get getSheet =>
-//       (sheet.currentWidget as DraggableScrollableSheet);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return LayoutBuilder(builder: (context, constraints) {
-//       return DraggableScrollableSheet(
-//         key: sheet,
-//         initialChildSize: 0.6,
-//         maxChildSize: 0.95,
-//         minChildSize: 0,
-//         expand: true,
-//         snap: true,
-//         snapSizes: [
-//           // 60 / constraints.maxHeight,
-//           0.5,
-//         ],
-//         controller: controller,
-//         builder: (BuildContext context, ScrollController scrollController) {
-//           return DecoratedBox(
-//             decoration: const BoxDecoration(
-//               color: Colors.white,
-//               boxShadow: [
-//                 BoxShadow(
-//                   blurRadius: 10,
-//                   spreadRadius: 1,
-//                   offset: Offset(0, 1),
-//                 ),nnected. Trying to conn
-//               ],
-//               borderRadius: BorderRadius.only(
-//                 topLeft: Radius.circular(22),
-//                 topRight: Radius.circular(22),
-//               ),
-//             ),
-//             child: CustomScrollView(
-//               controller: scrollController,
-//               slivers: [
-//                 topButtonIndicator(),
-//                 SliverToBoxAdapter(
-//                   child: widget.child,
-//                 ),
-//               ],
-//             ),
-//           );
-//         },
-//       );
-//     });
-//   }
-//
-//   SliverToBoxAdapter topButtonIndicator() {
-//     return SliverToBoxAdapter(
-//       child: Container(
-//           child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               crossAxisAlignment: CrossAxisAlignment.stretch,
-//               children: <Widget>[
-//                 Container(
-//                     child: Center(
-//                         child: Wrap(children: <Widget>[
-//                           Container(
-//                               width: 100,
-//                               margin: const EdgeInsets.only(top: 10, bottom: 10),
-//                               height: 5,
-//                               decoration: const BoxDecoration(
-//                                 color: Colors.black45,
-//                                 shape: BoxShape.rectangle,
-//                                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
-//                               )),
-//                         ]))),
-//               ])),
-//     );
-//   }
-// }
