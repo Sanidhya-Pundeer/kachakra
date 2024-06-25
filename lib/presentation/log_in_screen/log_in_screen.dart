@@ -1,8 +1,10 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:courier_delivery/core/app_export.dart';
+import 'package:courier_delivery/core/utils/validation_functions.dart';
 import 'package:courier_delivery/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/custom_floating_edit_text.dart';
 import 'controller/log_in_controller.dart';
@@ -21,6 +23,7 @@ class _LogInScreenState extends State<LogInScreen> {
   bool _otpSuccess = false;
   List<TextEditingController> controllers =
       List.generate(4, (_) => TextEditingController());
+  SharedPreferences? _prefs;
 
   @override
   void initState() {
@@ -31,6 +34,11 @@ class _LogInScreenState extends State<LogInScreen> {
       ),
     );
     super.initState();
+    initializeSharedPreferences();
+  }
+
+  Future<void> initializeSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
   @override
@@ -140,7 +148,6 @@ class _LogInScreenState extends State<LogInScreen> {
                                     decoration: InputDecoration(
                                       counter: Offstage(),
                                       border: OutlineInputBorder(),
-
                                     ),
                                     onChanged: (value) {
                                       if (value.isNotEmpty && index < 3) {
@@ -180,7 +187,9 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   CustomButton(
                     height: getVerticalSize(54),
-                    text: _loginViaOTP ? (_otpSuccess ? "Submit OTP" : "Send OTP") : "lbl_log_in".tr,
+                    text: _loginViaOTP
+                        ? (_otpSuccess ? "Submit OTP" : "Send OTP")
+                        : "lbl_log_in".tr,
                     margin: getMargin(top: 31),
                     onTap: () {
                       if (!_loginViaOTP) {
@@ -203,7 +212,9 @@ class _LogInScreenState extends State<LogInScreen> {
                       }
                     },
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text(
                     "or",
                     style: TextStyle(
@@ -217,7 +228,9 @@ class _LogInScreenState extends State<LogInScreen> {
                     variant: ButtonVariant.OutlineDeeppurple600,
                     fontStyle: ButtonFontStyle.SFProTextBold15,
                     height: getVerticalSize(54),
-                    text: !_loginViaOTP ? "Login via OTP" : "Login with Password".tr,
+                    text: !_loginViaOTP
+                        ? "Login via OTP"
+                        : "Login with Password".tr,
                     margin: getMargin(top: 20),
                     onTap: () {
                       if (!_loginViaOTP) {
@@ -278,7 +291,13 @@ class _LogInScreenState extends State<LogInScreen> {
     );
   }
 
-  onTapLogin() {
+  onTapLogin() async {
+    await _prefs?.setString(
+        'phoneNumber', controller.phoneNumberController.text.toString() ?? '');
+    await _prefs?.setString(
+        'password', controller.passwordController.text.toString() ?? '');
+    String phone = _prefs?.getString('phoneNumber') ?? '';
+    print("Phone Number check: ${phone}");
     Get.toNamed(
       AppRoutes.homeContainer1Screen,
     );

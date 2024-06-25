@@ -2,16 +2,21 @@ import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:courier_delivery/core/app_export.dart';
 import 'package:courier_delivery/data/userData.dart';
 import 'package:courier_delivery/presentation/scrap_waste_industry_screen/widgets/category_button_industry_widget.dart';
+import 'package:courier_delivery/presentation/textile_waste_screen/models/waste_example_list.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_image.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_subtitle_1.dart';
 import 'package:courier_delivery/widgets/app_bar/custom_app_bar.dart';
 import 'package:courier_delivery/widgets/custom_button.dart';
+import 'package:courier_delivery/widgets/custom_icon_button.dart';
 import 'package:courier_delivery/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../show_loading_screen/show_loading_screen.dart';
 import 'controller/scrap_waste_industry_controller.dart';
+import 'models/scrap_waste_industry_card_item_list.dart';
+import 'widgets/category_button_industry_widget.dart';
 
 class ScrapWasteIndustryScreen extends StatefulWidget {
   ScrapWasteIndustryScreen({Key? key}) : super(key: key);
@@ -163,8 +168,8 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                 SizedBox(
                                   width: getHorizontalSize(16),
                                 ),
-                                category_button_industry(
-                                    "Plastic".tr, 'assets/images/plastic-wast.jpg'),
+                                category_button_industry("Plastic".tr,
+                                    'assets/images/plastic-wast.jpg'),
                                 SizedBox(
                                   width: getHorizontalSize(16),
                                 ),
@@ -175,7 +180,6 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                 ),
                                 category_button_industry(
                                     "E-Waste".tr, 'assets/images/e-waste.jpg'),
-
                               ],
                             ),
                           ]),
@@ -184,270 +188,289 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                       if (UserData.userType == 'industry')
                         if (selectedCategory != null)
                           Padding(
-                          padding: getPadding(left: 16, right: 16),
-                          child: Container(
-                            margin: getMargin(bottom: 16),
-                            padding: getPadding(top: 16, bottom: 16 , left: 16, right: 16),
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3), // Shadow color
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 2), // Offset of the shadow
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(getHorizontalSize(10)),
-                              color: Colors.white.withOpacity(0.9),
-                            ),
-                            child: Column(children: [
-                            Text(
-                              "Which type of " + selectedCategory! + " you deal in?".tr,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
-                              style: AppStyle.txtSubheadline,
-                            ),
-                            SizedBox(height: 16),
-                              if (selectedCategory == 'Metal')
-                                Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CategoryButtonIndustryWidget(
-                                        text: "Mild Steel".tr, icon: ImageConstant.imgScrapIcon,
-                                      onTap: (isSelected) {
-                                      },),
-                                    SizedBox(
-                                      width: getHorizontalSize(16),
-                                    ),
-                                    CategoryButtonIndustryWidget(
-                                        text: "Stainless Steel".tr, icon: ImageConstant.imgTextileIcon,
-                                      onTap: (isSelected) {
-
-                                      },),
-                                    SizedBox(
-                                      width: getHorizontalSize(16),
-                                    ),
-                                    CategoryButtonIndustryWidget(
-                                        text: "Copper".tr, icon: ImageConstant.imgChemicalIcon,
-                                      onTap: (isSelected) {
-
-                                      },),
-                                  ],
+                            padding: getPadding(left: 16, right: 16),
+                            child: Container(
+                              margin: getMargin(bottom: 16),
+                              padding: getPadding(
+                                  top: 16, bottom: 16, left: 16, right: 16),
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black
+                                        .withOpacity(0.3), // Shadow color
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset:
+                                        Offset(0, 2), // Offset of the shadow
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(
+                                    getHorizontalSize(10)),
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                              child: Column(children: [
+                                Text(
+                                  "Which type of " +
+                                      selectedCategory! +
+                                      " you deal in?".tr,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.left,
+                                  style: AppStyle.txtSubheadline,
                                 ),
                                 SizedBox(height: 16),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    CategoryButtonIndustryWidget(
-                                        text: "Sponge Iron".tr, icon: ImageConstant.imgWastewaterIcon,
-                                      onTap: (isSelected) {
-
-                                      },),
-                                    SizedBox(
-                                      width: getHorizontalSize(16),
-                                    ),
-                                    CategoryButtonIndustryWidget(
-                                        text: "Aluminium".tr, icon: ImageConstant.imgCndWasteIcon,
-                                      onTap: (isSelected) {
-
-                                      },),
-                                    SizedBox(
-                                      width: getHorizontalSize(16),
-                                    ),
-                                    CategoryButtonIndustryWidget(
-                                        text: "Brass".tr, icon: ImageConstant.imgCndWasteIcon,
-                                      onTap: (isSelected) {
-
-                                      },),
-                                  ],
-                                ),
-                              ],
+                                if (selectedCategory == 'Metal')
+                                  Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "Mild Steel".tr,
+                                            // icon: ImageConstant.imgScrapIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Stainless Steel".tr,
+                                            // icon: ImageConstant.imgTextileIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Copper".tr,
+                                            // icon: ImageConstant.imgChemicalIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 16),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "Sponge Iron".tr,
+                                            // icon: ImageConstant.imgWastewaterIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Aluminium".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Brass".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                if (selectedCategory == 'Plastic')
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "PET".tr,
+                                            // icon: ImageConstant.imgScrapIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "HDPE".tr,
+                                            // icon: ImageConstant.imgTextileIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "PP".tr,
+                                            // icon: ImageConstant.imgChemicalIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 16),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "HIPS".tr,
+                                            // icon: ImageConstant.imgWastewaterIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "LDPE".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "PC".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 16),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "PS".tr,
+                                            // icon: ImageConstant.imgWastewaterIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "PVC".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "MLP".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                if (selectedCategory == 'Paper')
+                                  Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "Carton \nBox".tr,
+                                            // icon: ImageConstant.imgScrapIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Old News Paper".tr,
+                                            // icon: ImageConstant.imgTextileIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "White Waste Paper".tr,
+                                            // icon: ImageConstant.imgChemicalIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 16),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "Tetra \nPack".tr,
+                                            // icon: ImageConstant.imgWastewaterIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Mixed \nPaper".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Glass Bottle Waste".tr,
+                                            // icon: ImageConstant.imgCndWasteIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                if (selectedCategory == 'E-Waste')
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CategoryButtonIndustryWidget(
+                                            text: "Wires".tr,
+                                            // icon: ImageConstant.imgScrapIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Boards".tr,
+                                            // icon: ImageConstant.imgTextileIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                          SizedBox(
+                                            width: getHorizontalSize(16),
+                                          ),
+                                          CategoryButtonIndustryWidget(
+                                            text: "Chips".tr,
+                                            // icon: ImageConstant.imgChemicalIcon,
+                                            onTap: (isSelected) {},
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                              ]),
                             ),
-                              if (selectedCategory == 'Plastic')
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CategoryButtonIndustryWidget(
-                                            text: "PET".tr, icon: ImageConstant.imgScrapIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text:"HDPE".tr, icon: ImageConstant.imgTextileIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "PP".tr, icon: ImageConstant.imgChemicalIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                      ],
-                                    ),
-                                    SizedBox(height: 16),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        CategoryButtonIndustryWidget(
-                                            text: "HIPS".tr, icon: ImageConstant.imgWastewaterIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "LDPE".tr, icon: ImageConstant.imgCndWasteIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "PC".tr, icon: ImageConstant.imgCndWasteIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                      ],
-                                    ),
-                                    SizedBox(height: 16),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        CategoryButtonIndustryWidget(
-                                            text: "PS".tr, icon: ImageConstant.imgWastewaterIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "PVC".tr, icon: ImageConstant.imgCndWasteIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "MLP".tr, icon: ImageConstant.imgCndWasteIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              if (selectedCategory == 'Paper')
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CategoryButtonIndustryWidget(
-                                            text: "Carton \nBox".tr, icon: ImageConstant.imgScrapIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "Old News Paper".tr, icon: ImageConstant.imgTextileIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "White Waste Paper".tr, icon: ImageConstant.imgChemicalIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                      ],
-                                    ),
-                                    SizedBox(height: 16),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        CategoryButtonIndustryWidget(
-                                            text: "Tetra \nPack".tr, icon: ImageConstant.imgWastewaterIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "Mixed \nPaper".tr, icon: ImageConstant.imgCndWasteIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "Glass Bottle Waste".tr, icon: ImageConstant.imgCndWasteIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              if (selectedCategory == 'E-Waste')
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CategoryButtonIndustryWidget(
-                                            text: "Wires".tr, icon: ImageConstant.imgScrapIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "Boards".tr, icon: ImageConstant.imgTextileIcon,
-                                          onTap: (isSelected) {
-
-                                          },),
-                                        SizedBox(
-                                          width: getHorizontalSize(16),
-                                        ),
-                                        CategoryButtonIndustryWidget(
-                                            text: "Chips".tr, icon: ImageConstant.imgChemicalIcon,
-                                        onTap: (isSelected) {
-
-                                              },),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                          ]),),
-                        ),
+                          ),
                       Obx(() {
                         return Padding(
                             padding: getPadding(left: 15, right: 15),
                             child: Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Select your pickup type!".tr,
@@ -461,8 +484,7 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                   ),
                                   Text(
                                     "Charges: ₹ " +
-                                        controller
-                                            .chargeInfo.value.tr,
+                                        controller.chargeInfo.value.tr,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
@@ -471,15 +493,14 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                ]));}),
+                                ]));
+                      }),
                       Container(
                           margin: getMargin(all: 10),
                           alignment: Alignment.center,
                           child: Row(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
                                     onTap: () {
@@ -492,12 +513,11 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                          BorderRadius.circular(
-                                              10.0),
+                                              BorderRadius.circular(10.0),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.grey
-                                                  .withOpacity(0.6),
+                                              color:
+                                                  Colors.grey.withOpacity(0.6),
                                               spreadRadius: 1,
                                               blurRadius: 1,
                                               offset: Offset(0, 1),
@@ -510,32 +530,27 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                             'Free Pick-Up',
                                             style: TextStyle(
                                                 fontSize: 14,
-                                                fontStyle:
-                                                FontStyle.italic,
-                                                fontWeight:
-                                                FontWeight.w500,
-                                                color: ColorConstant
-                                                    .highlighter),
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.w500,
+                                                color:
+                                                    ColorConstant.highlighter),
                                             textAlign: TextAlign.center,
                                           ),
                                           Text(
                                             '( Every Saturday )',
                                             style: TextStyle(
                                                 fontSize: 11,
-                                                fontStyle:
-                                                FontStyle.italic,
-                                                fontWeight:
-                                                FontWeight.normal,
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.normal,
                                                 color: Colors.black),
                                             textAlign: TextAlign.center,
-                                          ),Text(
+                                          ),
+                                          Text(
                                             'Between 9 - 11 AM',
                                             style: TextStyle(
                                                 fontSize: 11,
-                                                fontStyle:
-                                                FontStyle.italic,
-                                                fontWeight:
-                                                FontWeight.normal,
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.normal,
                                                 color: Colors.black),
                                             textAlign: TextAlign.center,
                                           ),
@@ -552,16 +567,14 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                         width: 160,
                                         padding: getPadding(all: 10),
                                         decoration: BoxDecoration(
-                                          color: ColorConstant
-                                              .highlighter
+                                          color: ColorConstant.highlighter
                                               .withOpacity(0.8),
                                           borderRadius:
-                                          BorderRadius.circular(
-                                              10.0),
+                                              BorderRadius.circular(10.0),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.grey
-                                                  .withOpacity(0.6),
+                                              color:
+                                                  Colors.grey.withOpacity(0.6),
                                               spreadRadius: 1,
                                               blurRadius: 1,
                                               offset: Offset(0, 1),
@@ -574,40 +587,31 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                             'Immediate Pick-Up',
                                             style: TextStyle(
                                                 fontSize: 14,
-                                                fontStyle:
-                                                FontStyle.italic,
-                                                fontWeight:
-                                                FontWeight.w400,
-                                                color: ColorConstant
-                                                    .whiteA700),
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.w400,
+                                                color: ColorConstant.whiteA700),
                                             textAlign: TextAlign.center,
                                           ),
                                           Text(
                                             '( ₹ 10 per km )',
                                             style: TextStyle(
                                                 fontSize: 11,
-                                                fontStyle:
-                                                FontStyle.italic,
-                                                fontWeight:
-                                                FontWeight.normal,
-                                                color: ColorConstant
-                                                    .gray300),
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.normal,
+                                                color: ColorConstant.gray300),
                                             textAlign: TextAlign.center,
-                                          ),Text(
+                                          ),
+                                          Text(
                                             'Calculate Charges',
                                             style: TextStyle(
                                                 fontSize: 11,
-                                                fontStyle:
-                                                FontStyle.italic,
-                                                fontWeight:
-                                                FontWeight.normal,
-                                                color: ColorConstant
-                                                    .gray300),
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.normal,
+                                                color: ColorConstant.gray300),
                                             textAlign: TextAlign.center,
                                           ),
                                         ]))),
                               ])),
-
                     ],
                   ),
                 ),
@@ -674,7 +678,8 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                 boxShadow: [
                   BoxShadow(
                     color: selectedCategory == text
-                        ? ColorConstant.highlighter.withOpacity(0.9) // Selected border color
+                        ? ColorConstant.highlighter
+                            .withOpacity(0.9) // Selected border color
                         : Colors.grey, // Shadow color
                     spreadRadius: 3,
                     blurRadius: 7,
@@ -686,7 +691,8 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                 color: Colors.white,
                 border: Border.all(
                   color: selectedCategory == text
-                      ? ColorConstant.highlighter.withOpacity(0.3) // Selected border color
+                      ? ColorConstant.highlighter
+                          .withOpacity(0.3) // Selected border color
                       : Colors.transparent, // Transparent color if not selected
                   width: 1.0, // Adjust the border width as needed
                   style: selectedCategory == text

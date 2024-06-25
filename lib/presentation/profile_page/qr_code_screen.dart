@@ -72,10 +72,8 @@ class _CodeScreenState extends State<CodeScreen> {
               height: 35,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SizedBox(
-                  width: 30,
-                ),
                 ElevatedButton(
                     onPressed: () => {},
                     child: Row(
@@ -87,9 +85,6 @@ class _CodeScreenState extends State<CodeScreen> {
                         Text('Open in Scanner'),
                       ],
                     )),
-                SizedBox(
-                  width: 10,
-                ),
                 ElevatedButton(
                     onPressed: () => {},
                     child: Row(

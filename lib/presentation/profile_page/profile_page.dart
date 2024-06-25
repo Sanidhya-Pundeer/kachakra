@@ -1,11 +1,12 @@
 import 'package:courier_delivery/presentation/profile_page/qr_code_screen.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../log_out_screen/log_out_screen.dart';
 import 'controller/profile_controller.dart';
 import 'models/profile_model.dart';
 import 'package:courier_delivery/core/app_export.dart';
 import 'package:flutter/material.dart';
-import 'qr_code_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -18,513 +19,572 @@ class _ProfilePageState extends State<ProfilePage> {
   ProfileController controller = Get.put(ProfileController(ProfileModel().obs));
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      decoration: AppDecoration.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: double.maxFinite,
-                child: Container(
-                  padding: getPadding(
-                    left: 167,
-                    top: 22,
-                    right: 167,
-                    bottom: 22,
-                  ),
-                  decoration: AppDecoration.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "lbl_profile".tr,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.left,
-                        style: AppStyle.txtSFProTextBold28,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              CustomImageView(
-                imagePath: ImageConstant.imgEllipse240,
-                height: getSize(
-                  110,
-                ),
-                width: getSize(
-                  110,
-                ),
-                radius: BorderRadius.circular(
-                  getHorizontalSize(
-                    55,
+    return SingleChildScrollView(
+      child: Container(
+        width: double.maxFinite,
+        decoration: AppDecoration.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: double.maxFinite,
+                  child: Container(
+                    padding: getPadding(
+                      left: 167,
+                      top: 22,
+                      right: 167,
+                      bottom: 22,
+                    ),
+                    decoration: AppDecoration.white,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "lbl_profile".tr,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
+                          style: AppStyle.txtSFProTextBold28,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                margin: getMargin(
-                  top: 40,
-                ),
-              ),
-              SizedBox(
-                height: 1,
-              ),
-              GestureDetector(
-                  child: Icon(
-                    Icons.qr_code_2_rounded,
-                    color: Colors.black,
+                CustomImageView(
+                  imagePath: ImageConstant.imgEllipse240,
+                  height: getSize(
+                    110,
                   ),
-                  onTap: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CodeScreen()),
-                        )
-                      }),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.profileDetailsScreen);
-                },
-                child: Container(
+                  width: getSize(
+                    110,
+                  ),
+                  radius: BorderRadius.circular(
+                    getHorizontalSize(
+                      55,
+                    ),
+                  ),
                   margin: getMargin(
-                    left: 16,
                     top: 40,
-                    right: 16,
-                  ),
-                  padding: getPadding(
-                    left: 16,
-                    top: 15,
-                    right: 16,
-                    bottom: 15,
-                  ),
-                  decoration: AppDecoration.outlineGray200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgUser,
-                        height: getSize(
-                          22,
-                        ),
-                        width: getSize(
-                          22,
-                        ),
-                      ),
-                      Padding(
-                        padding: getPadding(
-                          left: 8,
-                          top: 3,
-                        ),
-                        child: Text(
-                          "lbl_my_profile".tr,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtBody,
-                        ),
-                      ),
-                      Spacer(),
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowrightBlack900,
-                        height: getSize(
-                          16,
-                        ),
-                        width: getSize(
-                          16,
-                        ),
-                        margin: getMargin(
-                          top: 3,
-                          right: 1,
-                          bottom: 3,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.mySubscriptionScreen);
-                },
-                child: Container(
-                  margin: getMargin(
-                    left: 16,
-                    top: 16,
-                    right: 16,
-                  ),
-                  padding: getPadding(
-                    left: 16,
-                    top: 15,
-                    right: 16,
-                    bottom: 15,
-                  ),
-                  decoration: AppDecoration.fillGray50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgSave,
-                        height: getSize(
-                          22,
+                SizedBox(
+                  height: 1,
+                ),
+                GestureDetector(
+                    child: Icon(
+                      Icons.qr_code_2_rounded,
+                      color: Colors.black,
+                    ),
+                    onTap: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CodeScreen()),
+                          )
+                        }),
+                SizedBox(
+                  height: 10,
+                ),
+
+                // FutureBuilder<String>(
+                //   future: retrievePhoneNumber(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.waiting) {
+                //       return Center(child: CircularProgressIndicator());
+                //     } else if (snapshot.hasError) {
+                //       return Center(child: Text('Error: ${snapshot.error}'));
+                //     } else if (snapshot.hasData) {
+                //       String phoneNumber = snapshot.data!;
+                //       return Center(
+                //         child: Text("${phoneNumber}", style: TextStyle(fontSize: 15, color: Colors.black),),
+                //       );
+                //     } else {
+                //       return Center(child: Text('No data available.'));
+                //     }
+                //   },
+                // ),
+                // FutureBuilder<String>(
+                //   future: retrievePassword(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.waiting) {
+                //       return Center(child: CircularProgressIndicator());
+                //     } else if (snapshot.hasError) {
+                //       return Center(child: Text('Error: ${snapshot.error}'));
+                //     } else if (snapshot.hasData) {
+                //       String password = snapshot.data!;
+                //       return Center(
+                //         child: Text("${password}", style: TextStyle(fontSize: 15, color: Colors.black),),
+                //       );
+                //     } else {
+                //       return Center(child: Text('No data available.'));
+                //     }
+                //   },
+                // ),
+                SizedBox(
+                  height: 10,
+                ),
+
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.profileDetailsScreen);
+                  },
+                  child: Container(
+                    margin: getMargin(
+                      left: 16,
+                      top: 40,
+                      right: 16,
+                    ),
+                    padding: getPadding(
+                      left: 16,
+                      top: 15,
+                      right: 16,
+                      bottom: 15,
+                    ),
+                    decoration: AppDecoration.outlineGray200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomImageView(
+                          svgPath: ImageConstant.imgUser,
+                          height: getSize(
+                            22,
+                          ),
+                          width: getSize(
+                            22,
+                          ),
                         ),
-                        width: getSize(
-                          22,
+                        Padding(
+                          padding: getPadding(
+                            left: 8,
+                            top: 3,
+                          ),
+                          child: Text(
+                            "lbl_my_profile".tr,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtBody,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: getPadding(
-                          left: 8,
-                          top: 3,
+                        Spacer(),
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowrightBlack900,
+                          height: getSize(
+                            16,
+                          ),
+                          width: getSize(
+                            16,
+                          ),
+                          margin: getMargin(
+                            top: 3,
+                            right: 1,
+                            bottom: 3,
+                          ),
                         ),
-                        child: Text(
-                          "My Subscription".tr,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtBody,
-                        ),
-                      ),
-                      Spacer(),
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowrightBlack900,
-                        height: getSize(
-                          16,
-                        ),
-                        width: getSize(
-                          16,
-                        ),
-                        margin: getMargin(
-                          top: 3,
-                          right: 1,
-                          bottom: 3,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.myAddressScreen);
-                },
-                child: Container(
-                  margin: getMargin(
-                    left: 16,
-                    top: 16,
-                    right: 16,
-                  ),
-                  padding: getPadding(
-                    left: 16,
-                    top: 15,
-                    right: 16,
-                    bottom: 15,
-                  ),
-                  decoration: AppDecoration.outlineGray200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgSignalBlack90022x22,
-                        height: getSize(
-                          22,
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.mySubscriptionScreen);
+                  },
+                  child: Container(
+                    margin: getMargin(
+                      left: 16,
+                      top: 16,
+                      right: 16,
+                    ),
+                    padding: getPadding(
+                      left: 16,
+                      top: 15,
+                      right: 16,
+                      bottom: 15,
+                    ),
+                    decoration: AppDecoration.fillGray50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomImageView(
+                          svgPath: ImageConstant.imgSave,
+                          height: getSize(
+                            22,
+                          ),
+                          width: getSize(
+                            22,
+                          ),
                         ),
-                        width: getSize(
-                          22,
+                        Padding(
+                          padding: getPadding(
+                            left: 8,
+                            top: 3,
+                          ),
+                          child: Text(
+                            "My Subscription".tr,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtBody,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: getPadding(
-                          left: 8,
-                          top: 3,
+                        Spacer(),
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowrightBlack900,
+                          height: getSize(
+                            16,
+                          ),
+                          width: getSize(
+                            16,
+                          ),
+                          margin: getMargin(
+                            top: 3,
+                            right: 1,
+                            bottom: 3,
+                          ),
                         ),
-                        child: Text(
-                          "lbl_my_address".tr,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtBody,
-                        ),
-                      ),
-                      Spacer(),
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowrightBlack900,
-                        height: getSize(
-                          16,
-                        ),
-                        width: getSize(
-                          16,
-                        ),
-                        margin: getMargin(
-                          top: 3,
-                          right: 1,
-                          bottom: 3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.myFamilyMemberScreen);
-                },
-                child: Container(
-                  margin: getMargin(
-                    left: 16,
-                    top: 16,
-                    right: 16,
-                  ),
-                  padding: getPadding(
-                    left: 16,
-                    top: 15,
-                    right: 16,
-                    bottom: 15,
-                  ),
-                  decoration: AppDecoration.outlineGray200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgSave,
-                        height: getSize(
-                          22,
-                        ),
-                        width: getSize(
-                          22,
-                        ),
-                      ),
-                      Padding(
-                        padding: getPadding(
-                          left: 8,
-                          top: 3,
-                        ),
-                        child: Text(
-                          "My Family Members".tr,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtBody,
-                        ),
-                      ),
-                      Spacer(),
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowrightBlack900,
-                        height: getSize(
-                          16,
-                        ),
-                        width: getSize(
-                          16,
-                        ),
-                        margin: getMargin(
-                          top: 3,
-                          right: 1,
-                          bottom: 3,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.customerSupportScreen);
-                },
-                child: Container(
-                  margin: getMargin(
-                    left: 16,
-                    top: 16,
-                    right: 16,
-                  ),
-                  padding: getPadding(
-                    left: 16,
-                    top: 15,
-                    right: 16,
-                    bottom: 15,
-                  ),
-                  decoration: AppDecoration.outlineGray200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgIcheadset,
-                        height: getSize(
-                          22,
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.myAddressScreen);
+                  },
+                  child: Container(
+                    margin: getMargin(
+                      left: 16,
+                      top: 16,
+                      right: 16,
+                    ),
+                    padding: getPadding(
+                      left: 16,
+                      top: 15,
+                      right: 16,
+                      bottom: 15,
+                    ),
+                    decoration: AppDecoration.outlineGray200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomImageView(
+                          svgPath: ImageConstant.imgSignalBlack90022x22,
+                          height: getSize(
+                            22,
+                          ),
+                          width: getSize(
+                            22,
+                          ),
                         ),
-                        width: getSize(
-                          22,
+                        Padding(
+                          padding: getPadding(
+                            left: 8,
+                            top: 3,
+                          ),
+                          child: Text(
+                            "lbl_my_address".tr,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtBody,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: getPadding(
-                          left: 8,
-                          top: 3,
+                        Spacer(),
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowrightBlack900,
+                          height: getSize(
+                            16,
+                          ),
+                          width: getSize(
+                            16,
+                          ),
+                          margin: getMargin(
+                            top: 3,
+                            right: 1,
+                            bottom: 3,
+                          ),
                         ),
-                        child: Text(
-                          "msg_customer_support".tr,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtBody,
-                        ),
-                      ),
-                      Spacer(),
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowrightBlack900,
-                        height: getSize(
-                          16,
-                        ),
-                        width: getSize(
-                          16,
-                        ),
-                        margin: getMargin(
-                          top: 3,
-                          right: 1,
-                          bottom: 3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.privacyPolicyScreen);
-                },
-                child: Container(
-                  margin: getMargin(
-                    left: 16,
-                    top: 16,
-                    right: 16,
-                  ),
-                  padding: getPadding(
-                    left: 16,
-                    top: 15,
-                    right: 16,
-                    bottom: 15,
-                  ),
-                  decoration: AppDecoration.outlineGray200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowdownBlack900,
-                        height: getSize(
-                          22,
-                        ),
-                        width: getSize(
-                          22,
-                        ),
-                      ),
-                      Padding(
-                        padding: getPadding(
-                          left: 8,
-                          top: 3,
-                        ),
-                        child: Text(
-                          "lbl_privacy_policy".tr,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtBody,
-                        ),
-                      ),
-                      Spacer(),
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowrightBlack900,
-                        height: getSize(
-                          16,
-                        ),
-                        width: getSize(
-                          16,
-                        ),
-                        margin: getMargin(
-                          top: 3,
-                          right: 1,
-                          bottom: 3,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        insetPadding: EdgeInsets.all(16),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        contentPadding: EdgeInsets.zero,
-                        content: LogOutScreen(),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  margin: getMargin(
-                    left: 16,
-                    top: 16,
-                    right: 16,
-                    bottom: 5,
-                  ),
-                  padding: getPadding(
-                    left: 16,
-                    top: 15,
-                    right: 16,
-                    bottom: 15,
-                  ),
-                  decoration: AppDecoration.outlineGray200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomImageView(
-                        svgPath: ImageConstant.imgRefresh,
-                        height: getSize(
-                          22,
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.myFamilyMemberScreen);
+                  },
+                  child: Container(
+                    margin: getMargin(
+                      left: 16,
+                      top: 16,
+                      right: 16,
+                    ),
+                    padding: getPadding(
+                      left: 16,
+                      top: 15,
+                      right: 16,
+                      bottom: 15,
+                    ),
+                    decoration: AppDecoration.outlineGray200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomImageView(
+                          svgPath: ImageConstant.imgSave,
+                          height: getSize(
+                            22,
+                          ),
+                          width: getSize(
+                            22,
+                          ),
                         ),
-                        width: getSize(
-                          22,
+                        Padding(
+                          padding: getPadding(
+                            left: 8,
+                            top: 3,
+                          ),
+                          child: Text(
+                            "My Family Members".tr,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtBody,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: getPadding(
-                          left: 8,
-                          top: 3,
+                        Spacer(),
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowrightBlack900,
+                          height: getSize(
+                            16,
+                          ),
+                          width: getSize(
+                            16,
+                          ),
+                          margin: getMargin(
+                            top: 3,
+                            right: 1,
+                            bottom: 3,
+                          ),
                         ),
-                        child: Text(
-                          "lbl_log_out".tr,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtBody,
-                        ),
-                      ),
-                      Spacer(),
-                      CustomImageView(
-                        svgPath: ImageConstant.imgArrowrightBlack900,
-                        height: getSize(
-                          16,
-                        ),
-                        width: getSize(
-                          16,
-                        ),
-                        margin: getMargin(
-                          top: 3,
-                          right: 1,
-                          bottom: 3,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.customerSupportScreen);
+                  },
+                  child: Container(
+                    margin: getMargin(
+                      left: 16,
+                      top: 16,
+                      right: 16,
+                    ),
+                    padding: getPadding(
+                      left: 16,
+                      top: 15,
+                      right: 16,
+                      bottom: 15,
+                    ),
+                    decoration: AppDecoration.outlineGray200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomImageView(
+                          svgPath: ImageConstant.imgIcheadset,
+                          height: getSize(
+                            22,
+                          ),
+                          width: getSize(
+                            22,
+                          ),
+                        ),
+                        Padding(
+                          padding: getPadding(
+                            left: 8,
+                            top: 3,
+                          ),
+                          child: Text(
+                            "msg_customer_support".tr,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtBody,
+                          ),
+                        ),
+                        Spacer(),
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowrightBlack900,
+                          height: getSize(
+                            16,
+                          ),
+                          width: getSize(
+                            16,
+                          ),
+                          margin: getMargin(
+                            top: 3,
+                            right: 1,
+                            bottom: 3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.privacyPolicyScreen);
+                  },
+                  child: Container(
+                    margin: getMargin(
+                      left: 16,
+                      top: 16,
+                      right: 16,
+                    ),
+                    padding: getPadding(
+                      left: 16,
+                      top: 15,
+                      right: 16,
+                      bottom: 15,
+                    ),
+                    decoration: AppDecoration.outlineGray200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowdownBlack900,
+                          height: getSize(
+                            22,
+                          ),
+                          width: getSize(
+                            22,
+                          ),
+                        ),
+                        Padding(
+                          padding: getPadding(
+                            left: 8,
+                            top: 3,
+                          ),
+                          child: Text(
+                            "lbl_privacy_policy".tr,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtBody,
+                          ),
+                        ),
+                        Spacer(),
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowrightBlack900,
+                          height: getSize(
+                            16,
+                          ),
+                          width: getSize(
+                            16,
+                          ),
+                          margin: getMargin(
+                            top: 3,
+                            right: 1,
+                            bottom: 3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          insetPadding: EdgeInsets.all(16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          contentPadding: EdgeInsets.zero,
+                          content: LogOutScreen(),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    margin: getMargin(
+                      left: 16,
+                      top: 16,
+                      right: 16,
+                      bottom: 5,
+                    ),
+                    padding: getPadding(
+                      left: 16,
+                      top: 15,
+                      right: 16,
+                      bottom: 15,
+                    ),
+                    decoration: AppDecoration.outlineGray200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomImageView(
+                          svgPath: ImageConstant.imgRefresh,
+                          height: getSize(
+                            22,
+                          ),
+                          width: getSize(
+                            22,
+                          ),
+                        ),
+                        Padding(
+                          padding: getPadding(
+                            left: 8,
+                            top: 3,
+                          ),
+                          child: Text(
+                            "lbl_log_out".tr,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtBody,
+                          ),
+                        ),
+                        Spacer(),
+                        CustomImageView(
+                          svgPath: ImageConstant.imgArrowrightBlack900,
+                          height: getSize(
+                            16,
+                          ),
+                          width: getSize(
+                            16,
+                          ),
+                          margin: getMargin(
+                            top: 3,
+                            right: 1,
+                            bottom: 3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<String> retrievePhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String phoneNumber = prefs.getString('phoneNumber') ?? '';
+    print("Phone Number: ${phoneNumber}");
+    return phoneNumber;
+  }
+
+  Future<String> retrievePassword() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String password = prefs.getString('password') ?? '';
+    print("Password: ${password}");
+    return password;
   }
 }
