@@ -32,8 +32,8 @@ class SplashController extends GetxController {
     Timer(const Duration(seconds: 3), () {
       print("is intro ====== ${isIntro}");
       print("isSignIn ====== ${isSignIn}");
-      print("Username ${userSession!['username']}");
-      print("userSession ===== ${userSession}");
+      // print("Phone Number ${userSession!['phoneNumber']}");
+      // print("userSession ===== ${userSession}");
       // isSignIn = true;
       if (isIntro) {
         Get.toNamed(AppRoutes.onboardingOneScreen);
@@ -41,7 +41,7 @@ class SplashController extends GetxController {
         Get.toNamed(AppRoutes.logInScreen);
       } else if (!isSignIn) {
         controller.phoneNumberController
-            .setText(userSession!["username"].toString());
+            .setText(userSession!["phoneNumber"].toString());
         controller.passwordController
             .setText(userSession!["password"].toString());
         print(controller.phoneNumberController.text.toString());

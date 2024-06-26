@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
   maps_launcher
   permission_handler_windows
+  share_plus
   smart_auth
   url_launcher_windows
 )
