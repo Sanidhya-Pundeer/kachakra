@@ -1,10 +1,10 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:courier_delivery/core/app_export.dart';
-import 'package:flutter/cupertino.dart';
-// import 'package:courier_delivery/presentation/refer_and_earn_screen/contacts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReferAndEarn extends StatefulWidget {
   ReferAndEarn({super.key});
@@ -14,17 +14,27 @@ class ReferAndEarn extends StatefulWidget {
 }
 
 class _ReferAndEarnState extends State<ReferAndEarn> {
+  String referalCode = "Here is your referal code join hindgreco";
+
   List<Contact> contacts = [];
   List<Contact> contactsFiltered = [];
   TextEditingController searchController = TextEditingController();
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     getAllContacts();
     searchController.addListener(() {
       filterContact();
     });
+  }
+
+  ShareFunction() {
+    Share.share(referalCode);
+  }
+
+  ShareMail() {
+    Share.share(referalCode, subject: 'referal code for hindgreco');
   }
 
   filterContact() {
@@ -33,31 +43,64 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
     if (searchController.text.isNotEmpty) {
       _contacts.retainWhere((contact) {
         String searchTerm = searchController.text.toLowerCase();
-        String contactName = contact.displayName!.toLowerCase();
+        String contactName = contact.displayName?.toLowerCase() ?? '';
         return contactName.contains(searchTerm);
       });
 
       setState(() {
         contactsFiltered = _contacts;
       });
+    } else {
+      setState(() {
+        contactsFiltered = contacts;
+      });
     }
   }
 
   getAllContacts() async {
-    List<Contact> _contacts = await ContactsService.getContacts();
-    setState(() {
-      contacts = _contacts;
-    });
+    PermissionStatus permissionStatus = await getContactPermission();
+    if (permissionStatus == PermissionStatus.granted) {
+      List<Contact> _contacts = await ContactsService.getContacts();
+      setState(() {
+        contacts = _contacts;
+        contactsFiltered = _contacts;
+      });
+    } else {
+      // Handle the case when permission is not granted
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text("Permissions error"),
+          content: Text(
+              "Please enable contacts access permission in system settings"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
-  // This widget is the root of your application.
+  Future<PermissionStatus> getContactPermission() async {
+    PermissionStatus permission = await Permission.contacts.status;
+    if (permission != PermissionStatus.granted &&
+        permission != PermissionStatus.permanentlyDenied) {
+      PermissionStatus permissionStatus = await Permission.contacts.request();
+      return permissionStatus;
+    } else {
+      return permission;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isSearching = searchController.text.isNotEmpty;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        // backgroundColor: Color.fromARGB(255, 227, 219, 219),
         body: Stack(
           children: [
             Container(
@@ -67,8 +110,6 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                   Image.asset(
                     "assets/images/refer.png",
                     height: Get.height * 0.38,
-                    // fit: BoxFit.fitHeight,
-                    // width: double.infinity,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
@@ -80,79 +121,35 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Row(
                       children: [
-                        SizedBox(width: 9),
-                        Container(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.copy_rounded,
-                                size: 23,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text('Copy')
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 40,
-                        ),
-                        Container(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.share,
-                                size: 23,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text('Share')
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 40,
-                        ),
-                        Container(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.mail_outline_rounded,
-                                size: 23,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text('Mail')
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 40,
-                        ),
-                        Container(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.more_horiz_rounded,
-                                size: 23,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text('More')
-                            ],
-                          ),
-                        ),
+                        _buildIconColumn(Icons.copy_rounded, 'Copy', () {
+                          Clipboard.setData(
+                                  ClipboardData(text: "Your referral code"))
+                              .then((_) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content:
+                                    Text("Referral code copied to clipboard")));
+                          });
+                        }),
+                        SizedBox(width: 40),
+                        _buildIconColumn(Icons.share, 'Share', () {
+                          // Implement share functionality
+                          ShareFunction();
+                        }),
+                        SizedBox(width: 40),
+                        _buildIconColumn(Icons.mail_outline_rounded, 'Mail',
+                            () {
+                          // Implement mail functionality
+                          ShareMail();
+                        }),
+                        SizedBox(width: 40),
+                        _buildIconColumn(Icons.more_horiz_rounded, 'More', () {
+                          // Implement more options functionality
+                        }),
                       ],
                     ),
                   ),
@@ -179,23 +176,28 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                     slivers: <Widget>[
                       SliverToBoxAdapter(
                         child: Container(
-                            padding: EdgeInsets.all(16.0),
-                            child: TextField(
-                              controller: searchController,
-                              decoration: InputDecoration(
-                                  labelText: 'Search',
-                                  border: new OutlineInputBorder(
-                                      borderSide: new BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                  prefixIcon: Icon(Icons.search_outlined,
-                                      color: Theme.of(context).primaryColor)),
-                            )),
+                          padding: EdgeInsets.all(16.0),
+                          child: TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              labelText: 'Search',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              prefixIcon: Icon(
+                                Icons.search_outlined,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            Contact contact = isSearching == true
+                            Contact contact = isSearching
                                 ? contactsFiltered[index]
                                 : contacts[index];
                             String? phone = contact.phones?.isNotEmpty == true
@@ -204,9 +206,9 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
 
                             return ListTile(
                               title: Text(contact.displayName ?? 'No name'),
-                              subtitle: Text(phone ?? 'No phone number'),
+                              subtitle: Text(phone!),
                               leading: (contact.avatar != null &&
-                                      contact.avatar!.length > 0)
+                                      contact.avatar!.isNotEmpty)
                                   ? CircleAvatar(
                                       backgroundImage:
                                           MemoryImage(contact.avatar!),
@@ -216,7 +218,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                                     ),
                             );
                           },
-                          childCount: isSearching == true
+                          childCount: isSearching
                               ? contactsFiltered.length
                               : contacts.length,
                         ),
@@ -228,6 +230,19 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildIconColumn(IconData icon, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(icon, size: 23),
+          SizedBox(height: 5),
+          Text(label),
+        ],
       ),
     );
   }
@@ -249,7 +264,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
     );
   }
 
-  onTapArrowleft4() {
+  void onTapArrowleft4() {
     Get.back();
   }
 }
