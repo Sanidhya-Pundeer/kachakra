@@ -3,5 +3,5 @@
 class PaymentMethodModel {
   String? icon;
   String? title;
-  PaymentMethodModel(this.icon,this.title);
+  PaymentMethodModel(this.icon, this.title);
 }

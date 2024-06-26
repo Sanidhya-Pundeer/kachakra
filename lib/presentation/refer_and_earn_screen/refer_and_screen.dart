@@ -1,5 +1,6 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:courier_delivery/core/app_export.dart';
+import 'package:courier_delivery/presentation/faq_screen/faq_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -149,8 +150,14 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                           ShareMail();
                         }),
                         SizedBox(width: 40),
-                        _buildIconColumn(Icons.more_horiz_rounded, 'More', () {
+                        _buildIconColumn(Icons.question_answer_outlined, 'FAQ',
+                            () {
                           // Implement more options functionality
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FAQ(),
+                              ));
                         }),
                       ],
                     ),
