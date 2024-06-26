@@ -297,7 +297,16 @@ class _LogInScreenState extends State<LogInScreen> {
     await _prefs?.setString(
         'password', controller.passwordController.text.toString() ?? '');
     String phone = _prefs?.getString('phoneNumber') ?? '';
-    print("Phone Number check: ${phone}");
+    String password = _prefs?.getString('password') ?? '';
+    // print("Phone Number check: ${phone}");
+    Map<String, dynamic> userSession = {
+      'phoneNumber': phone,
+      'password': password
+      // Add other user session data here
+    };
+    await PrefUtils.setIsSignIn(false);
+    await PrefUtils.setIsIntro(false);
+    await PrefUtils.setUserSession(userSession);
     Get.toNamed(
       AppRoutes.homeContainer1Screen,
     );

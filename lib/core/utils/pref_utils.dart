@@ -7,6 +7,7 @@ class PrefUtils {
   static String prefName = "com.courierdelivery.app";
   static String isIntro = "${prefName}isIntro";
   static String signIn = "${prefName}signIn";
+  static String _userSession = "${prefName}userSession";
 
   PrefUtils() {
     SharedPreferences.getInstance().then((value) {
@@ -35,7 +36,6 @@ class PrefUtils {
     return intValue;
   }
 
-
   static setIsSignIn(bool isFav) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(signIn, isFav);
@@ -46,4 +46,25 @@ class PrefUtils {
     return prefs.getBool(signIn) ?? true;
   }
 
+  static Future<void> setUserSession(Map<String, dynamic> userData) async {
+    String userSessionJson = jsonEncode(userData);
+    await _sharedPreferences?.setString(_userSession, userSessionJson);
+  }
+
+  static Future<Map<String, dynamic>?> getUserSession() async {
+    try {
+      String? userSessionJson = _sharedPreferences?.getString(_userSession);
+      if (userSessionJson == null) {
+        return null;
+      }
+      return jsonDecode(userSessionJson) as Map<String, dynamic>;
+    } catch (e) {
+      print('Error decoding user session: $e');
+      return null;
+    }
+  }
+
+  static Future<void> clearUserSession() async {
+    await _sharedPreferences?.remove(_userSession);
+  }
 }

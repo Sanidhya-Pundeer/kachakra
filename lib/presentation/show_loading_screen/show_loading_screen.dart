@@ -105,7 +105,7 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
               showInitialContent = false;
               _currentIndex = 1;
             })));
-    Timer(Duration(seconds: 50),
+    Timer(Duration(seconds: 10),
         () => (setState(() => showInitialContent2 = false)));
   }
 

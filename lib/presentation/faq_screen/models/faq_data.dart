@@ -12,24 +12,3 @@ class FaqData {
     ];
   }
 }
-
-
-
-
-// class PaymentData {
-//   static List<PaymentMethodModel> getpaymentDAta() {
-//     return [
-//       PaymentMethodModel(ImageConstant.imgRazorPayIcon, "RazorPay"),
-//       // PaymentMethodModel(ImageConstant.imgPhonePeIcon,"PhonePe"),
-//       // PaymentMethodModel(ImageConstant.imgGooglePayIcon,"Google pay"),
-//       // PaymentMethodModel(ImageConstant.imgUpiIcon,"UPI Payments"),
-//     ];
-//   }
-// }
-
-
-// class PaymentMethodModel {
-//   String? icon;
-//   String? title;
-//   PaymentMethodModel(this.icon, this.title);
-// }
