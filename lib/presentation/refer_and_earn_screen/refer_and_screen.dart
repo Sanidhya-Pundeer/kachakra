@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ReferAndEarn extends StatefulWidget {
   ReferAndEarn({super.key});
@@ -125,6 +126,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildIconColumn(Icons.copy_rounded, 'Copy', () {
                           Clipboard.setData(
@@ -204,18 +206,51 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                                 ? contact.phones!.first.value
                                 : 'No phone number';
 
-                            return ListTile(
-                              title: Text(contact.displayName ?? 'No name'),
-                              subtitle: Text(phone!),
-                              leading: (contact.avatar != null &&
-                                      contact.avatar!.isNotEmpty)
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          MemoryImage(contact.avatar!),
-                                    )
-                                  : CircleAvatar(
-                                      child: Text(contact.initials()),
-                                    ),
+                            return Row(
+                              children: [
+                                Container(
+                                  width: Get.width * 0.75,
+                                  child: ListTile(
+                                    title:
+                                        Text(contact.displayName ?? 'No name'),
+                                    subtitle: Text(phone!),
+                                    leading: (contact.avatar != null &&
+                                            contact.avatar!.isNotEmpty)
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                MemoryImage(contact.avatar!),
+                                          )
+                                        : CircleAvatar(
+                                            child: Text(contact.initials()),
+                                          ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // SMS functionality for invite
+                                    final Uri url = Uri(
+                                      scheme: 'sms',
+                                      path: phone,
+                                      queryParameters: <String, String>{
+                                        'body': 'Your referral code',
+                                      },
+                                    );
+                                    // if (await canLaunchUrl(url)) {
+                                    // await launchUrl(url);
+                                    // } else {
+                                    // print(
+                                    // 'show dialog: cannot launch this url');
+                                    // }
+                                    //For error handling
+                                    try {
+                                      await launchUrl(url);
+                                    } catch (e) {
+                                      print(e.toString());
+                                    }
+                                  },
+                                  child: Text('Invite'),
+                                ),
+                              ],
                             );
                           },
                           childCount: isSearching

@@ -129,7 +129,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                     ),
                                   )),
                               Padding(
-                                padding: getPadding(left: 16, right: 16),
+                                padding:
+                                    getPadding(left: 16, right: 16, top: 16),
                                 child: Text("Payment Gateway".tr,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.left,

@@ -508,7 +508,7 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                           .updateChargeInfo('0');
                                     },
                                     child: Container(
-                                        width: 160,
+                                        width: 155,
                                         padding: getPadding(all: 10),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -564,7 +564,7 @@ class _SendPackageScreenState extends State<ScrapWasteIndustryScreen> {
                                           .updateChargeInfo('150');
                                     },
                                     child: Container(
-                                        width: 160,
+                                        width: 155,
                                         padding: getPadding(all: 10),
                                         decoration: BoxDecoration(
                                           color: ColorConstant.highlighter

@@ -78,9 +78,12 @@ class _CategoryButtonIndustryWidgetState
                   Text(
                     upperCaseLetters,
                     style: TextStyle(
-                      fontSize: 24, // Adjust font size as needed
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Color(0xff071952),
+                      fontSize: getFontSize(
+                        24,
+                      ),
+                      fontFamily: 'SF Pro Text',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   // CustomImageView(
