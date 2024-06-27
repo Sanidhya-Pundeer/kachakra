@@ -3,9 +3,11 @@ import 'package:courier_delivery/presentation/replace_bin_screen/models/bin_mode
 import 'package:flutter/material.dart';
 
 class BinWidget extends StatefulWidget {
-  final String capacity;
+  final String familySize;
+  final String location;
 
-  const BinWidget({super.key, required this.capacity});
+  const BinWidget(
+      {super.key, required this.familySize, required this.location});
 
   @override
   _BinWidgetState createState() => _BinWidgetState();
@@ -13,12 +15,14 @@ class BinWidget extends StatefulWidget {
 
 class _BinWidgetState extends State<BinWidget> {
   late List<BinModel> binList;
+  late String price;
 
   @override
   void initState() {
     super.initState();
     binList = BinData.getBinData()
-        .where((bin) => bin.capacity == widget.capacity)
+        .where((bin) =>
+            bin.size == widget.familySize && bin.location == widget.location)
         .toList();
   }
 
@@ -27,13 +31,13 @@ class _BinWidgetState extends State<BinWidget> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "Bins Available (${widget.capacity})",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: Text(
+        //     "Bins Available ${binList.length}",
+        //     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        //   ),
+        // ),
         Flexible(
           fit: FlexFit.loose,
           child: ListView.builder(
@@ -62,10 +66,17 @@ class _BinWidgetState extends State<BinWidget> {
                           Text("Brand: ${bin.make!}"),
                           Text("Household Size: ${bin.size}"),
                           Text("Use Location: ${bin.location}"),
-                          Text("Price: \$${bin.price}"),
+                          Text("Price: Rs. ${bin.price}"),
                         ],
                       ),
                     ),
+                    ElevatedButton(
+                        onPressed: () => {
+                              setState(() {
+                                price = bin.price!;
+                              })
+                            },
+                        child: Text("Add")),
                   ],
                 ),
               );

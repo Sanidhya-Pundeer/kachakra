@@ -10,7 +10,7 @@ class BinData {
       BinModel("assets/images/45L_hbin.jpg", "red, green", "Polypropylene",
           "23 cms", "45 L", "Hindgreco", "4-5", "Kitchen", "200"),
       BinModel(
-          "assets/images/8L_hbin.png",
+          "assets/images/8L_hbin.jpg",
           "red, green",
           "Stainless Steel",
           "8 x 13 inch",
