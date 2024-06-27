@@ -320,23 +320,26 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 16),
-                                  child: Flexible(
-                                      child: Container(
-                                    child: Text(
-                                      UserData.userCurrentAddress.isEmpty
-                                          ? UserData.userAddress.tr
-                                          : UserData.userCurrentAddress.tr,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal),
+                                Flexible(
+                                  fit: FlexFit.loose,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 16),
+                                    child: Container(
+                                      child: Text(
+                                        UserData.userCurrentAddress.isEmpty
+                                            ? UserData.userAddress.tr
+                                            : UserData.userCurrentAddress.tr,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal),
+                                      ),
+                                      width: 300,
+                                      height: 40,
                                     ),
-                                    width: 300,
-                                    height: 40,
-                                  )),
+                                  ),
                                 ),
                                 SizedBox(
                                   height: 60,
@@ -524,23 +527,26 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 16),
-                                    child: Flexible(
-                                        child: Container(
-                                      child: Text(
-                                        UserData.userCurrentAddress.isEmpty
-                                            ? UserData.userAddress.tr
-                                            : UserData.userCurrentAddress.tr,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal),
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 16),
+                                      child: Container(
+                                        child: Text(
+                                          UserData.userCurrentAddress.isEmpty
+                                              ? UserData.userAddress.tr
+                                              : UserData.userCurrentAddress.tr,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                        width: 300,
+                                        height: 40,
                                       ),
-                                      width: 300,
-                                      height: 40,
-                                    )),
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 60,
@@ -1004,23 +1010,26 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Flexible(
-                                  child: Container(
-                                child: Text(
-                                  UserData.userCurrentAddress.isEmpty
-                                      ? UserData.userAddress.tr
-                                      : UserData.userCurrentAddress.tr,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal),
+                            Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Container(
+                                  child: Text(
+                                    UserData.userCurrentAddress.isEmpty
+                                        ? UserData.userAddress.tr
+                                        : UserData.userCurrentAddress.tr,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  width: 260,
+                                  height: 40,
                                 ),
-                                width: 260,
-                                height: 40,
-                              )),
+                              ),
                             ),
                             GestureDetector(
                               onTap: null,
@@ -1036,21 +1045,24 @@ class _ShowLoadingScreenState extends State<ShowLoadingScreen> {
                         ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Flexible(
-                                  child: Container(
-                                child: Text(
-                                  "Drop Location",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal),
+                            Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Container(
+                                  child: Text(
+                                    "Drop Location",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  width: 260,
+                                  height: 40,
                                 ),
-                                width: 260,
-                                height: 40,
-                              )),
+                              ),
                             ),
                             GestureDetector(
                               onTap: null,
