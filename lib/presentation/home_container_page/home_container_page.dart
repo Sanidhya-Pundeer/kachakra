@@ -1,6 +1,7 @@
 import 'package:courier_delivery/data/mswDriverData.dart';
 import 'package:courier_delivery/data/requestData.dart';
 import 'package:courier_delivery/presentation/home_container_page/models/home_slider_model.dart';
+import 'package:courier_delivery/presentation/marketplace_screen/marketplace_homescreen.dart';
 import 'package:courier_delivery/presentation/refer_and_earn_screen/refer_and_screen.dart';
 import 'package:courier_delivery/widgets/custom_button.dart';
 import 'package:geolocator/geolocator.dart';
@@ -426,7 +427,12 @@ class _SendPackageScreenState extends State<HomeContainerPage> {
                         width: getHorizontalSize(16),
                       ),
                       category_button_industry(() {
-                        Get.toNamed(AppRoutes.textileWasteScreen);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MarketPlaceScreen(),
+                            ));
+                        ;
                       }, "Textile Waste".tr, ImageConstant.imgTextileIcon),
                       SizedBox(
                         width: getHorizontalSize(16),
@@ -574,22 +580,22 @@ class _SendPackageScreenState extends State<HomeContainerPage> {
                     SizedBox(
                       width: getHorizontalSize(8),
                     ),
-                    if (UserData.userType == 'industry')
-                      category_button(() {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ReferAndEarn(),
-                            ));
-                      }, "Refer & Earn", ImageConstant.imgSendPackegeIcon),
+                    category_button(() {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReferAndEarn(),
+                          ));
+                    }, "Refer & Earn", ImageConstant.imgSendPackegeIcon),
                     if (UserData.userType == 'industry')
                       SizedBox(
                         width: getHorizontalSize(8),
                       ),
-                    category_button(() {
-                      Get.toNamed(AppRoutes.orderTrackingScreen);
-                    }, "Request \nStatus".tr,
-                        ImageConstant.imgOrderTracingIcon),
+                    if (UserData.userType == 'industry')
+                      category_button(() {
+                        Get.toNamed(AppRoutes.orderTrackingScreen);
+                      }, "Request \nStatus".tr,
+                          ImageConstant.imgOrderTracingIcon),
                   ],
                 ),
               ),
