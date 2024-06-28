@@ -1,6 +1,9 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:courier_delivery/core/app_export.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/razor_pay_api.dart';
+import 'package:courier_delivery/presentation/replace_bin_screen/models/bin_IndustryData.dart';
+import 'package:courier_delivery/presentation/replace_bin_screen/models/bin_data.dart';
 import 'package:courier_delivery/presentation/replace_bin_screen/widgets/bin_IndustryWidget.dart';
 import 'package:courier_delivery/presentation/replace_bin_screen/widgets/bin_widget.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_image.dart';
@@ -506,39 +509,111 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                           ],
                                         ),
                                       ),
-                                    if (selectedFamilySize == '1-2' ||
-                                        selectedFamilySize == '4-5' ||
-                                        selectedFamilySize == 'All')
-                                      Container(
-                                        width: double.infinity,
-                                        child: Padding(
-                                            padding: getPadding(top: 16),
-                                            child: Text(
-                                                "Make your life a bit easier."
-                                                    .tr,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    AppStyle.txtSubheadline)),
-                                      ),
-                                    if (selectedFamilySize == '1-4' ||
-                                        selectedFamilySize == '5-6' ||
-                                        selectedFamilySize == 'more than 6')
-                                      Container(
-                                        width: double.infinity,
-                                        child: Padding(
-                                            padding: getPadding(top: 5),
-                                            child: Text(
-                                                "With our Bin Accessories".tr,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    AppStyle.txtSubheadline)),
-                                      ),
-                                    WasteExanpleList(
-                                        selectedItem: selectedFamilySize),
                                   ],
                                 ),
+                              ),
+                            if (UserData.userType == 'industry')
+                              CarouselSlider(
+                                options: CarouselOptions(
+                                  height: 300.0,
+                                  autoPlay: true,
+                                  enlargeCenterPage: true,
+                                  aspectRatio: 16 / 9,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {});
+                                  },
+                                ),
+                                items: IndustryData.getBinData().map((bin) {
+                                  return Builder(
+                                    builder: (BuildContext context) {
+                                      return Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                bin.image!,
+                                                width: 50,
+                                                height: 50,
+                                              ),
+                                              Text("Color: ${bin.color}"),
+                                              Text("Material: ${bin.material}"),
+                                              Text(
+                                                  "Dimensions: ${bin.dimensions}"),
+                                              Text("Brand: ${bin.make!}"),
+                                              Text("Location: ${bin.location}"),
+                                              Text("Price: Rs. ${bin.price}"),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    _updatePrice(bin.price!);
+                                                  },
+                                                  child: Text("Add")),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }).toList(),
+                              ),
+                            if (UserData.userType == 'household')
+                              CarouselSlider(
+                                options: CarouselOptions(
+                                  height: 310.0,
+                                  autoPlay: true,
+                                  enlargeCenterPage: false,
+                                  aspectRatio: 16 / 9,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {});
+                                  },
+                                ),
+                                items: BinData.getBinData().map((bin) {
+                                  return Builder(
+                                    builder: (BuildContext context) {
+                                      return SizedBox(
+                                        width: 400,
+                                        child: Card(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              // crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Image.asset(
+                                                  bin.image!,
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
+                                                Text("Color: ${bin.color}"),
+                                                Text(
+                                                    "Material: ${bin.material}"),
+                                                Text(
+                                                    "Dimensions: ${bin.dimensions}"),
+                                                Text("Brand: ${bin.make!}"),
+                                                Text(
+                                                    "Household Size: ${bin.size}"),
+                                                Text(
+                                                    "Location: ${bin.location}"),
+                                                Text("Price: Rs. ${bin.price}"),
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      _updatePrice(bin.price!);
+                                                    },
+                                                    child: Text("Add")),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }).toList(),
                               ),
                           ],
                         ),
@@ -582,478 +657,5 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
 
   onTapArrowleft4() {
     Get.back();
-  }
-
-  Widget householdProfileDetail(icon, value, previous) {
-    return Container(
-      child: Padding(
-          padding: getPadding(left: 30, right: 20),
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                    width: 100,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (selectedFamilySize == '1-4')
-                              CustomImageView(
-                                imagePath: icon,
-                                width: getSize(50),
-                                margin: getMargin(bottom: 10),
-                              ),
-                            if (selectedFamilySize == '5-6')
-                              CustomImageView(
-                                imagePath: icon,
-                                width: getSize(70),
-                                margin: getMargin(bottom: 10),
-                              ),
-                            if (selectedFamilySize == 'more than 6')
-                              CustomImageView(
-                                imagePath: icon,
-                                width: getSize(90),
-                                margin: getMargin(bottom: 10),
-                              ),
-                          ],
-                        ),
-                      ],
-                    )),
-                //
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(children: [
-                        Text(
-                          value,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: ColorConstant.black900,
-                            fontSize: 24,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(width: getHorizontalSize(10)),
-                      ]),
-                      SizedBox(height: getVerticalSize(2)),
-                      Text(
-                        'For ' + selectedFamilySize! + ' members',
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: ColorConstant.gray600,
-                          fontSize: 16,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ]),
-              ])),
-    );
-  }
-
-  Widget industryProfileDetail(icon, value, previous) {
-    return Container(
-      child: Padding(
-          padding: getPadding(left: 30, right: 20),
-          child: Column(
-            children: [
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                        width: 100,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                if (selectedCapacity == '200 L')
-                                  CustomImageView(
-                                    imagePath: icon,
-                                    width: getSize(100),
-                                    margin: getMargin(bottom: 10),
-                                  ),
-                                if (selectedCapacity == '660 L')
-                                  CustomImageView(
-                                    imagePath: icon,
-                                    width: getSize(100),
-                                    margin: getMargin(bottom: 10),
-                                  ),
-                                if (selectedCapacity == '1100 L')
-                                  CustomImageView(
-                                    imagePath: icon,
-                                    width: getSize(100),
-                                    margin: getMargin(bottom: 10),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        )),
-                    //
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(children: [
-                            Text(
-                              value,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: ColorConstant.black900,
-                                fontSize: 24,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            SizedBox(width: getHorizontalSize(10)),
-                          ]),
-                          SizedBox(height: getVerticalSize(2)),
-                          if (selectedCapacity == '200 L')
-                            Text(
-                              'Price: 500 ',
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: ColorConstant.gray600,
-                                fontSize: 16,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          if (selectedCapacity == '660 L')
-                            Text(
-                              'Price: 17500 ',
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: ColorConstant.gray600,
-                                fontSize: 16,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          if (selectedCapacity == '1100 L')
-                            Text(
-                              'Price: 21500 ',
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: ColorConstant.gray600,
-                                fontSize: 16,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                        ]),
-                  ]),
-              if (selectedCapacity == '200 L')
-                Container(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Color:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Black",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Material:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Mild Steel",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Dimensions:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "20 x 48 inch",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Capacity:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "200 L",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Make:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Hindgreco",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Recommended Loc:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Outdoors",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Price:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "500",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              if (selectedCapacity == '660 L')
-                Container(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Color:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Blue",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Material:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "HDPE",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Dimensions:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "85 x 90 x 86 cm",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Capacity:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "660 L",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Make:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Ultima",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Recommended Loc:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Outdoors",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Price:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "17500",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              if (selectedCapacity == '1100 L')
-                Container(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Color:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Blue",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Material:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "HDPE",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Dimensions:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "103 x 105 x 100 cm",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Capacity:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "1100 L",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Make:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Ultima",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Recommended Loc:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "Outdoors",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Price:",
-                            style: TextStyle(),
-                          ),
-                          Text(
-                            "21500",
-                            style: TextStyle(),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          )),
-    );
   }
 }
