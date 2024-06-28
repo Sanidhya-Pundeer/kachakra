@@ -1,6 +1,7 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:courier_delivery/core/app_export.dart';
 import 'package:courier_delivery/presentation/payment_method_screen/razor_pay_api.dart';
+import 'package:courier_delivery/presentation/replace_bin_screen/widgets/bin_IndustryWidget.dart';
 import 'package:courier_delivery/presentation/replace_bin_screen/widgets/bin_widget.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_image.dart';
 import 'package:courier_delivery/widgets/app_bar/appbar_subtitle_1.dart';
@@ -35,6 +36,13 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
   ];
   List<String> capacity = ['200 L', '660 L', '1100 L'];
 
+  double totalPrice = 0.0;
+  void _updatePrice(String price) {
+    setState(() {
+      totalPrice += double.parse(price);
+    });
+  }
+
   String? selectedFamilySize;
   String? selectedLocation;
   String? selectedCapacity;
@@ -42,6 +50,28 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
   int addon_price = 0;
   int total_price = 0;
   SharedPreferences? _prefs;
+
+  void _onCapacityChanged(String? newValue) {
+    setState(() {
+      selectedCapacity = newValue;
+      totalPrice = 0.0; // Reset total price
+    });
+  }
+
+  void _onFamilySizeChanged(String? newValue) {
+    setState(() {
+      selectedFamilySize = newValue;
+      selectedLocation = null; // Reset location
+      totalPrice = 0.0; // Reset total price
+    });
+  }
+
+  void _onLocationChanged(String? newValue) {
+    setState(() {
+      selectedLocation = newValue;
+      totalPrice = 0.0; // Reset total price
+    });
+  }
 
   @override
   void initState() {
@@ -155,7 +185,6 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.left,
                                     style: AppStyle.txtSubheadline)),
-                            // if (selectedItem == 'Household')
                             if (UserData.userType == 'industry')
                               Container(
                                 child: Column(
@@ -182,31 +211,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                           DropdownButton<String>(
                                             isExpanded: true,
                                             value: selectedCapacity,
-                                            onChanged: (String? newValue) {
-                                              setState(() {
-                                                selectedCapacity = newValue;
-                                                if (selectedCapacity ==
-                                                    '200 L') {
-                                                  sendPackageController
-                                                      .updateChargeInfo('500');
-                                                  total_price = 500;
-                                                }
-                                                if (selectedCapacity ==
-                                                    '660 L') {
-                                                  sendPackageController
-                                                      .updateChargeInfo(
-                                                          '17500');
-                                                  total_price = 17500;
-                                                }
-                                                if (selectedCapacity ==
-                                                    '1100 L') {
-                                                  sendPackageController
-                                                      .updateChargeInfo(
-                                                          '21500');
-                                                  total_price = 21500;
-                                                }
-                                              });
-                                            },
+                                            onChanged: _onCapacityChanged,
                                             items: [
                                               DropdownMenuItem(
                                                 value: null,
@@ -254,14 +259,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                       height: getVerticalSize(16),
                                     ),
                                     if (selectedCapacity == '200 L')
-                                      GestureDetector(
-                                        onTap: () async {
-                                          setState(() async {
-                                            sendPackageController
-                                                .updateChargeInfo('500');
-                                          });
-                                        },
-                                        child: Container(
+                                      Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
                                             color: ColorConstant.highlighter
@@ -269,21 +267,12 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(8),
                                           ),
-                                          child: industryProfileDetail(
-                                              'assets/images/200L_bin.jpg',
-                                              "200 L",
-                                              "Capacity"),
-                                        ),
-                                      ),
+                                          child: BinIndustryWidget(
+                                            capacity: selectedCapacity!,
+                                            onPriceSelected: _updatePrice,
+                                          )),
                                     if (selectedCapacity == '660 L')
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() async {
-                                            sendPackageController
-                                                .updateChargeInfo('17500');
-                                          });
-                                        },
-                                        child: Container(
+                                      Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
                                             color: ColorConstant.highlighter
@@ -291,23 +280,12 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(8),
                                           ),
-                                          child: industryProfileDetail(
-                                              'assets/images/660L_bin.jpg',
-                                              "660 L",
-                                              "Capacity"),
-                                        ),
-                                      ),
+                                          child: BinIndustryWidget(
+                                            capacity: selectedCapacity!,
+                                            onPriceSelected: _updatePrice,
+                                          )),
                                     if (selectedCapacity == '1100 L')
-                                      GestureDetector(
-                                        onTap: () async {
-                                          setState(() {
-                                            sendPackageController
-                                                .updateChargeInfo('21500');
-                                          });
-                                          await _prefs?.setString(
-                                              'payment', '21500' ?? '');
-                                        },
-                                        child: Container(
+                                      Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
                                             color: ColorConstant.highlighter
@@ -315,12 +293,10 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(8),
                                           ),
-                                          child: industryProfileDetail(
-                                              'assets/images/1100L_bin.jpg',
-                                              "1100 L",
-                                              "Capacity"),
-                                        ),
-                                      ),
+                                          child: BinIndustryWidget(
+                                            capacity: selectedCapacity!,
+                                            onPriceSelected: _updatePrice,
+                                          )),
                                   ],
                                 ),
                               ),
@@ -350,26 +326,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                           DropdownButton<String>(
                                             isExpanded: true,
                                             value: selectedFamilySize,
-                                            onChanged: (String? newValue) {
-                                              setState(() {
-                                                selectedFamilySize = newValue;
-                                                // if (selectedFamilySize == '1-2') {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('40');
-                                                //   total_price=140;
-                                                // }
-                                                // if (selectedFamilySize == '4-5') {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('225');
-                                                //   total_price=225;
-                                                // }
-                                                // if (selectedFamilySize == 'All') {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('260');
-                                                //   total_price=260;
-                                                // }
-                                              });
-                                            },
+                                            onChanged: _onFamilySizeChanged,
                                             items: [
                                               DropdownMenuItem(
                                                 value: null,
@@ -413,36 +370,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                           DropdownButton<String>(
                                             isExpanded: true,
                                             value: selectedLocation,
-                                            onChanged: (String? newValue) {
-                                              setState(() {
-                                                selectedLocation = newValue;
-                                                // if (selectedLocation == 'Kitchen' && selectedFamilySize =="1-2") {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('140');
-                                                //   total_price=40;
-                                                // }
-                                                // if (selectedLocation == 'Bathroom') {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('225');
-                                                //   total_price=225;
-                                                // }
-                                                // if (selectedLocation == 'Bedroom') {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('260');
-                                                //   total_price=260;
-                                                // }
-                                                // if (selectedLocation == 'Toilet') {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('260');
-                                                //   total_price=260;
-                                                // }
-                                                // if (selectedLocation == 'Office') {
-                                                //   sendPackageController
-                                                //       .updateChargeInfo('260');
-                                                //   total_price=260;
-                                                // }
-                                              });
-                                            },
+                                            onChanged: _onLocationChanged,
                                             items: [
                                               DropdownMenuItem(
                                                 value: null,
@@ -504,18 +432,11 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                           children: [
                                             if (selectedFamilySize == '1-2' &&
                                                 selectedLocation == 'Kitchen')
-                                              GestureDetector(
-                                                  child: BinWidget(
-                                                    familySize: "1-2",
-                                                    location: "Kitchen",
-                                                  ),
-                                                  onTap: () async {
-                                                    setState(() {
-                                                      sendPackageController
-                                                          .updateChargeInfo(
-                                                              '40');
-                                                    });
-                                                  }),
+                                              BinWidget(
+                                                familySize: "1-2",
+                                                location: "Kitchen",
+                                                onPriceSelected: _updatePrice,
+                                              ),
                                             SizedBox(
                                               height: 10,
                                             ),
@@ -524,6 +445,7 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                               BinWidget(
                                                 familySize: "1-2",
                                                 location: "Kitchen",
+                                                onPriceSelected: _updatePrice,
                                               ),
                                             SizedBox(
                                               height: 10,
@@ -534,32 +456,25 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                     if ((selectedFamilySize == '4-5' ||
                                             selectedFamilySize == 'All') &&
                                         selectedLocation == 'Kitchen')
-                                      GestureDetector(
-                                        onTap: () async {
-                                          setState(() async {
-                                            sendPackageController
-                                                .updateChargeInfo('140');
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            color: ColorConstant.highlighter
-                                                .withOpacity(0.3),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              BinWidget(
-                                                familySize: "4-5",
-                                                location: "Kitchen",
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                            ],
-                                          ),
+                                      Container(
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: ColorConstant.highlighter
+                                              .withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            BinWidget(
+                                              familySize: "4-5",
+                                              location: "Kitchen",
+                                              onPriceSelected: _updatePrice,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     if ((selectedFamilySize == '1-2' ||
@@ -569,62 +484,26 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                                             selectedLocation == 'Bedroom' ||
                                             selectedLocation == 'Toilet' ||
                                             selectedLocation == 'Office'))
-                                      GestureDetector(
-                                        onTap: () async {
-                                          setState(() async {
-                                            sendPackageController
-                                                .updateChargeInfo('140');
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            color: ColorConstant.highlighter
-                                                .withOpacity(0.3),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              BinWidget(
-                                                familySize: "All",
-                                                location:
-                                                    "Bathroom, Bedroom, Toilet, Office",
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                            ],
-                                          ),
+                                      Container(
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: ColorConstant.highlighter
+                                              .withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
-                                      ),
-                                    if (selectedFamilySize == '5-6')
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() async {
-                                            sendPackageController
-                                                .updateChargeInfo('225');
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            color: ColorConstant.highlighter
-                                                .withOpacity(0.3),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              householdProfileDetail(
-                                                  ImageConstant.imgbin,
-                                                  "40 L",
-                                                  "Family Size"),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                            ],
-                                          ),
+                                        child: Column(
+                                          children: [
+                                            BinWidget(
+                                              familySize: "All",
+                                              location:
+                                                  "Bathroom, Bedroom, Toilet, Office",
+                                              onPriceSelected: _updatePrice,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     if (selectedFamilySize == '1-2' ||
@@ -669,12 +548,11 @@ class _SendPackageScreenState extends State<ReplaceBinScreen> {
                 ),
                 bottomNavigationBar: CustomButton(
                     height: getVerticalSize(54),
-                    text: "Pay: ₹ ".tr +
-                        sendPackageController.chargeInfo.toString(),
+                    text: "Pay: ₹ " + totalPrice.toString(),
                     margin: getMargin(left: 16, right: 16, bottom: 40),
                     onTap: () async {
                       await _prefs?.setString(
-                          'payment', total_price.toString() ?? '');
+                          'payment', totalPrice.toString() ?? '');
                       if (selectedFamilySize != null ||
                           selectedCapacity != null) {
                         onTapNext();

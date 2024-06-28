@@ -1,33 +1,44 @@
-import 'package:courier_delivery/presentation/replace_bin_screen/models/bin_data.dart';
-import 'package:courier_delivery/presentation/replace_bin_screen/models/bin_model.dart';
+import 'package:courier_delivery/presentation/replace_bin_screen/models/bin_IndustryData.dart';
+import 'package:courier_delivery/presentation/replace_bin_screen/models/bin_IndustryModel.dart';
 import 'package:flutter/material.dart';
 
-class BinWidget extends StatefulWidget {
-  final String familySize;
-  final String location;
+class BinIndustryWidget extends StatefulWidget {
+  final String capacity;
   final Function(String) onPriceSelected;
 
-  const BinWidget(
-      {super.key,
-      required this.familySize,
-      required this.location,
-      required this.onPriceSelected});
+  const BinIndustryWidget({
+    super.key,
+    required this.capacity,
+    required this.onPriceSelected,
+  });
 
   @override
-  _BinWidgetState createState() => _BinWidgetState();
+  _BinIndustryWidgetState createState() => _BinIndustryWidgetState();
 }
 
-class _BinWidgetState extends State<BinWidget> {
-  late List<BinModel> binList;
-  late String price;
+class _BinIndustryWidgetState extends State<BinIndustryWidget> {
+  late List<Bin_IndustryModel> binList;
 
   @override
   void initState() {
     super.initState();
-    binList = BinData.getBinData()
-        .where((bin) =>
-            bin.size == widget.familySize && bin.location == widget.location)
-        .toList();
+    _updateBinList();
+  }
+
+  @override
+  void didUpdateWidget(BinIndustryWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.capacity != widget.capacity) {
+      _updateBinList();
+    }
+  }
+
+  void _updateBinList() {
+    setState(() {
+      binList = IndustryData.getBinData()
+          .where((bin) => bin.capacity == widget.capacity)
+          .toList();
+    });
   }
 
   @override
@@ -61,18 +72,13 @@ class _BinWidgetState extends State<BinWidget> {
                           Text("Material: ${bin.material}"),
                           Text("Dimensions: ${bin.dimensions}"),
                           Text("Brand: ${bin.make!}"),
-                          Text("Household Size: ${bin.size}"),
-                          Text("Use Location: ${bin.location}"),
+                          Text("Location: ${bin.location}"),
                           Text("Price: Rs. ${bin.price}"),
                         ],
                       ),
                     ),
                     ElevatedButton(
-                        onPressed: () => {
-                              setState(() {
-                                widget.onPriceSelected(bin.price!);
-                              })
-                            },
+                        onPressed: () => widget.onPriceSelected(bin.price!),
                         child: Text("Add")),
                   ],
                 ),
