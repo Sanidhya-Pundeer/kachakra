@@ -6,9 +6,9 @@ class BidModel {
   String? material;
   String? quantity;
   String? current_price;
-  String? min_price;
   String? duration;
   String? remaining_time;
+  String? shipping_time;
   String? owner_location;
   String? desc;
   String? date;
@@ -23,9 +23,9 @@ class BidModel {
     this.material,
     this.quantity,
     this.current_price,
-    this.min_price,
     this.duration,
     this.remaining_time,
+    this.shipping_time,
     this.owner_location,
     this.desc,
     this.date,

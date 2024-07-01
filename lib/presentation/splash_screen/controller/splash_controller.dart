@@ -30,6 +30,7 @@ class SplashController extends GetxController {
     Map<String, dynamic>? userSession = await PrefUtils.getUserSession();
 
     Timer(const Duration(seconds: 3), () {
+      isSignIn = true;
       print("is intro ====== ${isIntro}");
       print("isSignIn ====== ${isSignIn}");
       // print("Phone Number ${userSession!['phoneNumber']}");

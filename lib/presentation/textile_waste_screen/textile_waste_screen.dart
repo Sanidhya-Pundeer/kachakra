@@ -179,7 +179,8 @@ class _SendPackageScreenState extends State<TextileWasteScreen> {
                                                 });
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: selectedItem == item
+                                                backgroundColor: selectedItem ==
+                                                        item
                                                     ? ColorConstant.primaryAqua
                                                     : Colors.white,
                                                 shape: RoundedRectangleBorder(
@@ -218,8 +219,7 @@ class _SendPackageScreenState extends State<TextileWasteScreen> {
                       if (UserData.userType == 'industry')
                         Padding(
                           padding: getPadding(left: 16, right: 16),
-                          child: Column(
-                              children: [
+                          child: Column(children: [
                             Text(
                               "Please select preferred textile category?:".tr,
                               overflow: TextOverflow.ellipsis,
@@ -268,8 +268,10 @@ class _SendPackageScreenState extends State<TextileWasteScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.left,
                                     style: AppStyle.txtSubheadline)),
+                            Text('Enter your title'),
+                            TextField(),
                             CustomTextFormField(
-                                hintText: "Estimated Weight (Optional)",
+                                hintText: "Estimated Weight",
                                 suffix: Padding(
                                   padding: getPadding(top: 16, bottom: 16),
                                   child: Text(
@@ -278,18 +280,21 @@ class _SendPackageScreenState extends State<TextileWasteScreen> {
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                                controller: controller.grouptwentyfourController,
+                                controller:
+                                    controller.grouptwentyfourController,
                                 margin: getMargin(top: 9),
                                 textInputAction: TextInputAction.done,
                                 variant: TextFormFieldVariant.OutlineGray300,
                                 prefix: Container(
                                     margin: getMargin(
-                                        left: 16, top: 15, right: 16, bottom: 15),
+                                        left: 16,
+                                        top: 15,
+                                        right: 16,
+                                        bottom: 15),
                                     child: CustomImageView(
                                         svgPath: ImageConstant.imgMail)),
                                 prefixConstraints: BoxConstraints(
                                     maxHeight: getVerticalSize(54))),
-
                           ]),
                         ),
                     ],
